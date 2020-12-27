@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trump28/helper/constants.dart';
-import 'package:trump28/helper/game.dart';
+import 'package:trump28/modals/game.dart';
 
 class Create extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class _CreateState extends State<Create> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    game = new Game();
     _inController = new AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 800),
@@ -148,13 +149,7 @@ class _CreateState extends State<Create> with TickerProviderStateMixin {
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(15.0),
-                              onTap: () {
-                                Game.noOfPlayers = 4;
-                                _outController.forward(from: 0.0)
-                                  ..whenComplete(
-                                    () => lobbyState.value = LobbyState.WAITING,
-                                  );
-                              },
+                              onTap: () => createGame(FOUR_PLAYERS),
                               splashColor: Colors.transparent,
                               highlightColor: Colors.blueGrey[800],
                               child: Container(
@@ -184,13 +179,7 @@ class _CreateState extends State<Create> with TickerProviderStateMixin {
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(15.0),
-                              onTap: () {
-                                Game.noOfPlayers = 6;
-                                _outController.forward(from: 0.0)
-                                  ..whenComplete(
-                                    () => lobbyState.value = LobbyState.WAITING,
-                                  );
-                              },
+                              onTap: () => createGame(SIX_PLAYERS),
                               splashColor: Colors.transparent,
                               highlightColor: Colors.blueGrey[800],
                               child: Container(
@@ -220,5 +209,18 @@ class _CreateState extends State<Create> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  createGame(int noOfPlayers) {
+    game.noOfPlayers = noOfPlayers;
+    id = Game.generateId();
+    isHost = true;
+    
+    game.createSeatingForPlayers();
+
+    _outController.forward(from: 0.0)
+      ..whenComplete(
+        () => lobbyState.value = LobbyState.WAITING,
+      );
   }
 }

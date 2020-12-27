@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:trump28/game/res/player.dart';
-import 'package:trump28/helper/game.dart';
+import 'package:trump28/helper/constants.dart';
 
 class PlayerSeats extends StatelessWidget {
   @override
@@ -24,7 +24,7 @@ class PlayerSeats extends StatelessWidget {
       Positioned(
         left: -10,
         top: size.height / 2 - 35,
-        child: Player(
+        child: PlayerOnTable(
           angle: math.pi / 2,
           noOfCards: 8,
           size: 100,
@@ -33,7 +33,7 @@ class PlayerSeats extends StatelessWidget {
       Positioned(
         right: -10,
         top: size.height / 2 - 35,
-        child: Player(
+        child: PlayerOnTable(
           angle: (3 * math.pi) / 2,
           noOfCards: 8,
           size: 100,
@@ -41,13 +41,13 @@ class PlayerSeats extends StatelessWidget {
       ),
     ]);
 
-    if (Game.noOfPlayers == 4) {
+    if (game.noOfPlayers == FOUR_PLAYERS) {
       players.add(
         Positioned(
           top: 0,
           left: 0,
           right: 0,
-          child: Player(
+          child: PlayerOnTable(
             angle: math.pi,
             noOfCards: 8,
             size: 100,
@@ -60,10 +60,10 @@ class PlayerSeats extends StatelessWidget {
 
     players.addAll([
       Positioned(
-        left: size.width/7,
+        left: size.width / 7,
         top: 15,
-        child: Player(
-          angle: math.pi - (math.pi/14),
+        child: PlayerOnTable(
+          angle: math.pi - (math.pi / 14),
           noOfCards: 8,
           size: 100,
         ),
@@ -72,7 +72,7 @@ class PlayerSeats extends StatelessWidget {
         right: 0,
         left: 0,
         top: 0,
-        child: Player(
+        child: PlayerOnTable(
           angle: math.pi,
           noOfCards: 8,
           size: 100,
@@ -80,9 +80,9 @@ class PlayerSeats extends StatelessWidget {
       ),
       Positioned(
         top: 15,
-        right: size.width/7,
-        child: Player(
-          angle: math.pi + (math.pi/14),
+        right: size.width / 7,
+        child: PlayerOnTable(
+          angle: math.pi + (math.pi / 14),
           noOfCards: 8,
           size: 100,
         ),

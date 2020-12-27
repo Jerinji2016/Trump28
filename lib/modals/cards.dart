@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trump28/helper/game.dart';
+import 'package:trump28/helper/game_round.dart';
 import 'package:trump28/res/clubs.dart';
 import 'package:trump28/res/diamonds.dart';
 import 'package:trump28/res/hearts.dart';
@@ -36,7 +36,7 @@ class Cards {
   Widget card() => Container(
         margin: EdgeInsets.all(5.0),
         child: ValueListenableBuilder(
-            valueListenable: Game.selectedCard,
+            valueListenable: GameRound.selectedCard,
             builder: (context, val, child) {
               return Transform.translate(
                 offset: this.id == val ? pop : Offset(0, 0),
@@ -46,7 +46,7 @@ class Cards {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10.0),
                     onTap: () {
-                      Game.selectedCard.value = (this.id == val) ? "" : this.id;
+                      GameRound.selectedCard.value = (this.id == val) ? "" : this.id;
                     },
                     splashColor: Colors.transparent,
                     child: Container(

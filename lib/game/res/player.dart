@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Player extends StatelessWidget {
+class PlayerOnTable extends StatelessWidget {
   final double size, angle;
   final int noOfCards;
 
-  Player({
+  PlayerOnTable({
     this.noOfCards: 6,
     this.size: 70,
     this.angle: 0,
