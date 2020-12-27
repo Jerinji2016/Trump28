@@ -7,12 +7,15 @@ import 'package:trump28/lobby/join.dart';
 import 'package:trump28/lobby/res/background.dart';
 import 'package:trump28/lobby/start.dart';
 import 'package:trump28/lobby/waiting_lobby.dart';
+import 'package:wifi/wifi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft]);
+
+  myIP = await Wifi.ip;
 
   await SystemChrome.setEnabledSystemUIOverlays([]);
   SharedPreferences pref = await SharedPreferences.getInstance();
