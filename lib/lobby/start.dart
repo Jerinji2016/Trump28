@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 import 'package:trump28/helper/constants.dart';
 import 'package:trump28/res/trump28.dart';
 
@@ -354,11 +356,18 @@ class _StartState extends State<Start> with TickerProviderStateMixin {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.orange[500],
                   borderRadius: BorderRadius.circular(10.0),
-                  onTap: () {
-                    //  TODO: Also set name in shared preferences
-                    name.value = _controller.text.trim();
-                    print("Name set ${_controller.text.trim()}");
+                  onTap: () async {
+                    String newName = _controller.text.trim();
+                    if (newName.isEmpty) {
+                      Toast.show("Name cannot be empty", context);
+                      return;
+                    }
+                    name.value = newName;
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+                    pref.setString("name", newName);
 
+                    print("Name set ${_controller.text.trim()}");
                     Navigator.pop(context);
                   },
                   child: Container(

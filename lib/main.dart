@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trump28/helper/constants.dart';
 import 'package:trump28/lobby/create.dart';
 import 'package:trump28/lobby/join.dart';
@@ -14,6 +15,8 @@ void main() async {
       [DeviceOrientation.landscapeLeft]);
 
   await SystemChrome.setEnabledSystemUIOverlays([]);
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  name.value = pref.getString('name') ?? "Player";
 
   runApp(
     MaterialApp(
