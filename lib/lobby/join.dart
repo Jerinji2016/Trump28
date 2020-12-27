@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_p2p/flutter_p2p.dart';
-import 'package:flutter_p2p/gen/protos/protos.pb.dart';
 import 'package:trump28/helper/constants.dart';
 
 class Join extends StatefulWidget {
@@ -11,7 +9,7 @@ class Join extends StatefulWidget {
 }
 
 class _JoinState extends State<Join>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin {
   AnimationController _inController, _outController;
   Animation<double> _scaleIn, _opacityIn, _scaleOut, _opacityOut;
 
@@ -28,86 +26,6 @@ class _JoinState extends State<Join>
     "SuperSpeed Wifi 5G",
     "Mits Wifi 1",
   ];
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Stop handling events when the app doesn't run to prevent battery draining
-
-    if (state == AppLifecycleState.resumed) {
-      _register();
-    } else if (state == AppLifecycleState.paused) {
-      _unregister();
-    }
-  }
-
-  List<StreamSubscription> _subscriptions = [];
-
-  Future<bool> _checkPermission() async {
-    if (!await FlutterP2p.isLocationPermissionGranted()) {
-      await FlutterP2p.requestLocationPermission();
-      return false;
-    }
-    return true;
-  }
-
-  List<WifiP2pDevice> _peers = [];
-  bool _isConnected = false;
-  bool _isHost = false;
-  String _deviceAddress = "";
-
-  void _register() async {
-    if (!await _checkPermission()) {
-      return;
-    }
-    _subscriptions.add(FlutterP2p.wifiEvents.stateChange.listen((change) {
-      // Handle wifi state change
-    }));
-
-    _subscriptions.add(FlutterP2p.wifiEvents.connectionChange.listen((change) {
-      // Handle changes of the connection
-      setState(() {
-        _isConnected = change.networkInfo.isConnected;
-        _isHost = change.wifiP2pInfo.isGroupOwner;
-        _deviceAddress = change.wifiP2pInfo.groupOwnerAddress;
-      });
-    }));
-
-    _subscriptions.add(FlutterP2p.wifiEvents.thisDeviceChange.listen((change) {
-      // Handle changes of this device
-    }));
-
-    _subscriptions.add(FlutterP2p.wifiEvents.peersChange.listen((change) {
-      // Handle discovered peers
-      setState(() {
-        _peers = change.devices;
-      });
-    }));
-
-    _subscriptions.add(FlutterP2p.wifiEvents.discoveryChange.listen((change) {
-      // Handle discovery state changes
-    }));
-
-    // Register to the native events which are send to the streams above
-    FlutterP2p.register();
-    _discover();
-  }
-
-  void _discover() async {
-    print("Before discover");
-    print(_peers);
-    await FlutterP2p.discoverDevices();
-    print(_peers);
-  }
-
-  void _disconnect() async {
-    FlutterP2p.removeGroup();
-  }
-
-  void _unregister() {
-    _subscriptions.forEach(
-        (subscription) => subscription.cancel()); // Cancel subscriptions
-    FlutterP2p.unregister(); // Unregister from native events
-  }
 
   @override
   void initState() {
@@ -166,9 +84,6 @@ class _JoinState extends State<Join>
 
     _inController.forward(from: 0.0);
     super.initState();
-
-    _register();
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -176,9 +91,6 @@ class _JoinState extends State<Join>
     _inController?.dispose();
     _outController?.dispose();
     super.dispose();
-
-    WidgetsBinding.instance.removeObserver(this);
-    _disconnect();
   }
 
   @override
