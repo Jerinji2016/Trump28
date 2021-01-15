@@ -1,7 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:trump28/helper/udp.dart';
 import 'package:trump28/modals/cards.dart';
+import 'package:trump28/modals/game.dart';
+import 'package:trump28/modals/player.dart';
 
 const int TOTAL_PLAY_CARDS = 6;
+
+const int FOUR_PLAYERS = 4;
+const int SIX_PLAYERS = 6;
 
 const Color BLACK = Colors.black;
 const Color RED = Colors.red;
@@ -14,10 +22,32 @@ const double CARDS_8_OFFSET = 0.094,
     CARDS_4_OFFSET = 0.166,
     CARDS_3_OFFSET = 0.2;
 
-enum LobbyState { START, JOIN, CREATE, WAITING }
+enum GameState {
+  WAITING_FOR_PLAYERS,
+  DEALING_CARDS_1,
+  AUCTION_CALL_1,
+  DEALING_CARDS_2,
+  AUCTION_CALL_2,
+  GAME_IN_PROGRESS,
+  EVALUATING_RESULT,
+}
 
+enum LobbyState { START, JOIN, CREATE, WAITING }
 ValueNotifier<LobbyState> lobbyState = new ValueNotifier(LobbyState.START);
+
+Player me = new Player(id, name.value);
 ValueNotifier<String> name = new ValueNotifier("Player");
+Game game;
+String id, myIP;
+bool isHost;
+
+UDP udp;
+
+const String HOST_IP = "255.255.255.255";
+const String X = "#cut#";
+
+String encode(List<String> data) => data.join(X);
+List<String> decode(String data) => data.split(X);
 
 Map<String, Cards> deck = {
   "SA": new Cards(

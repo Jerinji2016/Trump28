@@ -1,31 +1,23 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:trump28/helper/codes.dart';
 import 'package:trump28/helper/constants.dart';
+import 'package:trump28/helper/udp.dart';
 
 class Join extends StatefulWidget {
   @override
   _JoinState createState() => _JoinState();
 }
 
-class _JoinState extends State<Join>
-    with TickerProviderStateMixin {
+class _JoinState extends State<Join> with TickerProviderStateMixin {
   AnimationController _inController, _outController;
   Animation<double> _scaleIn, _opacityIn, _scaleOut, _opacityOut;
 
-  bool _wifiIsLoading = true;
+  bool _isHostLoading = true;
 
-  List<String> wifis = [
-    "Mits Devices",
-    "Mits Guest",
-    "Mits Wifi 2",
-    "Mits Wifi 3A",
-    "Mits Wifi 3",
-    "Sayoojyam Wifi",
-    "JioFi 4G",
-    "SuperSpeed Wifi 5G",
-    "Mits Wifi 1",
-  ];
+  List<String> hosts = [];
 
   @override
   void initState() {
@@ -79,17 +71,28 @@ class _JoinState extends State<Join>
     Future.delayed(
       Duration(seconds: 3),
     ).then(
-      (value) => setState(() => _wifiIsLoading = false),
+      (value) => setState(() => _isHostLoading = false),
     );
 
     _inController.forward(from: 0.0);
+    initialise();
     super.initState();
+  }
+
+  initialise() async {
+    udp = new UDP(myIP);
+    await udp.connect();
+
+    pingHost();
+
+    udp.onDataHandler(clientPingHandler);
   }
 
   @override
   void dispose() {
     _inController?.dispose();
     _outController?.dispose();
+    udp?.close();
     super.dispose();
   }
 
@@ -167,7 +170,7 @@ class _JoinState extends State<Join>
                       ),
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: _wifiIsLoading
+                    child: _isHostLoading
                         ? Center(
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -184,7 +187,7 @@ class _JoinState extends State<Join>
                                     padding: EdgeInsets.all(10.0),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      wifis[__],
+                                      hosts[__],
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -193,7 +196,7 @@ class _JoinState extends State<Join>
                                 ),
                               );
                             },
-                            itemCount: wifis.length,
+                            itemCount: hosts.length,
                           ),
                   ),
                 ),
@@ -203,5 +206,39 @@ class _JoinState extends State<Join>
         ),
       ),
     );
+  }
+
+  bool gotHost = false;
+  pingHost() async {
+    int epoch = 0;
+    while (!gotHost) {
+      print("Pinging Host...$epoch");
+      await Future.delayed(Duration(seconds: 3));
+      String message = encode([
+        REQUEST_CONN.toString(),
+        myIP,
+      ]);
+      if (udp != null) udp.sendData(message, HOST_IP);
+
+      if (epoch++ == 10) {
+        print("Stop pinging...");
+        gotHost = true;
+        setState(() {
+          _isHostLoading = false;
+        });
+      }
+    }
+  }
+
+  clientPingHandler(String data) {
+    List<String> message = decode(data);
+    int code = int.parse(message[0]);
+    if (code == ACCEPT_CONN) {
+      hosts.add(message[1]);
+      setState(() {
+        _isHostLoading = false;
+      });
+    }
+    print(message);
   }
 }

@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:trump28/game/res/table_bg.dart';
+import 'package:trump28/helper/codes.dart';
 import 'package:trump28/helper/constants.dart';
+import 'package:trump28/helper/udp.dart';
+import 'package:trump28/modals/player.dart';
 
 enum From { JOIN, CREATE }
 
@@ -16,19 +22,8 @@ class _WaitingLobbyState extends State<WaitingLobby>
   AnimationController _inController, _outController;
   Animation<double> _scaleIn, _opacityIn, _scaleOut, _opacityOut;
 
-  bool _playersIsLoading = true;
+  bool _playersIsLoading = false;
   bool _isPlayerTeamedUp = false;
-
-  List<String> _teamA = [
-    "Team A 1",
-    "Team A 2",
-    "Team A 3",
-  ];
-
-  List<String> _teamB = [
-    "Team B 1",
-    "Team B 2",
-  ];
 
   @override
   void initState() {
@@ -80,14 +75,16 @@ class _WaitingLobbyState extends State<WaitingLobby>
     );
 
     _inController.forward(from: 0.0);
-
-    Future.delayed(
-      Duration(seconds: 1),
-    ).then(
-      (value) => setState(() => _playersIsLoading = false),
-    );
-
     super.initState();
+    initialise();
+  }
+
+  initialise() async {
+    if (isHost) {
+      udp = new UDP(HOST_IP);
+      await udp.connect();
+      udp.onDataHandler(hostOnDataHandler);
+    }
   }
 
   @override
@@ -101,7 +98,6 @@ class _WaitingLobbyState extends State<WaitingLobby>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        //  TODO : Reverse intro animation
         lobbyState.value =
             (widget.from == From.JOIN) ? LobbyState.JOIN : LobbyState.CREATE;
         return Future.value(false);
@@ -124,188 +120,261 @@ class _WaitingLobbyState extends State<WaitingLobby>
               child: __,
             ),
           ),
-          child: Container(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: InkWell(
-                      splashColor: Colors.black38,
-                      borderRadius: BorderRadius.circular(50.0),
-                      onTap: () => _outController.forward(from: 0.0)
-                        ..whenComplete(() => lobbyState.value =
-                            (widget.from == From.JOIN)
-                                ? LobbyState.JOIN
-                                : LobbyState.CREATE),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.arrow_back_outlined,
-                          size: 36,
+          child: Stack(
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20.0),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: InkWell(
+                          splashColor: Colors.black38,
+                          borderRadius: BorderRadius.circular(50.0),
+                          onTap: () => _outController.forward(from: 0.0)
+                            ..whenComplete(() => lobbyState.value =
+                                (widget.from == From.JOIN)
+                                    ? LobbyState.JOIN
+                                    : LobbyState.CREATE),
+                          child: Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Icon(
+                              Icons.arrow_back_outlined,
+                              size: 36,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      alignment: Alignment.topLeft,
+                    ),
+                    Container(
+                      child: Text(
+                        "Waiting for Players",
+                        style: TextStyle(
                           color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                        ),
+                        width: 500.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: _playersIsLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.white),
+                                ),
+                              )
+                            : Container(
+                                child: Stack(
+                                  children: [
+                                    TableBackground(),
+                                    joinableSeats(),
+                                  ],
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 25.0,
+                right: 25.0,
+                child: Material(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10.0),
+                    onTap: startGame,
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "START",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  alignment: Alignment.topLeft,
                 ),
-                Container(
-                  child: Text(
-                    "Waiting for Players",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                      vertical: 20.0,
-                    ),
-                    width: 400.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: _playersIsLoading
-                        ? Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      itemBuilder: (_, __) {
-                                        return Container(
-                                          padding: EdgeInsets.all(10.0),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            _teamA[__],
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      itemCount: _teamA.length,
-                                    ),
-                                    _isPlayerTeamedUp
-                                        ? SizedBox(
-                                            height: 0,
-                                            width: 0,
-                                          )
-                                        : Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () => addPlayerToTeam(
-                                                  isTeamA: true),
-                                              child: Container(
-                                                padding: EdgeInsets.all(10.0),
-                                                alignment: Alignment.center,
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                  size: 28,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 25.0),
-                                height: double.maxFinite,
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      itemBuilder: (_, __) {
-                                        return Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            highlightColor: Colors.transparent,
-                                            onTap: () {},
-                                            child: Container(
-                                              padding: EdgeInsets.all(10.0),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                _teamB[__],
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      itemCount: _teamB.length,
-                                    ),
-                                    _isPlayerTeamedUp
-                                        ? SizedBox(
-                                            height: 0,
-                                            width: 0,
-                                          )
-                                        : Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () => addPlayerToTeam(
-                                                  isTeamA: false),
-                                              child: Container(
-                                                padding: EdgeInsets.all(10.0),
-                                                alignment: Alignment.center,
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                  size: 28,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  addPlayerToTeam({bool isTeamA}) {
-    setState(() {
-      //  Team logic
-      isTeamA ? _teamA.add("New Player") : _teamB.add("New Player");
+  Widget joinableSeats() {
+    List<Widget> seats = [];
+
+    seats.addAll([
+      new Positioned(
+        child: Container(
+          margin: EdgeInsets.only(top: 10.0),
+          alignment: Alignment.topCenter,
+          child:
+              game.noOfPlayers == FOUR_PLAYERS ? seat(3, true) : seat(4, false),
+        ),
+      ),
+      new Positioned(
+        child: Container(
+          margin: EdgeInsets.only(bottom: 5.0),
+          alignment: Alignment.bottomCenter,
+          child: seat(1, true),
+        ),
+      ),
+    ]);
+
+    if (game.noOfPlayers == FOUR_PLAYERS)
+      seats.addAll([
+        new Positioned(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child: seat(2, false),
+          ),
+        ),
+        new Positioned(
+          child: Container(
+              alignment: Alignment.centerRight, child: seat(4, false)),
+        ),
+      ]);
+    else
+      seats.addAll([
+        new Positioned(
+          top: 40.0,
+          left: 40.0,
+          child: Container(
+            child: seat(3, true),
+          ),
+        ),
+        new Positioned(
+          top: 40.0,
+          right: 40.0,
+          child: Container(
+            child: seat(5, true),
+          ),
+        ),
+        new Positioned(
+          bottom: 40.0,
+          left: 40.0,
+          child: Container(
+            child: seat(2, false),
+          ),
+        ),
+        new Positioned(
+          bottom: 40.0,
+          right: 40.0,
+          child: Container(
+            child: seat(6, false),
+          ),
+        ),
+      ]);
+
+    return Stack(children: seats);
+  }
+
+  Widget seat(int seatNo, bool team) => (game.players[seatNo] == null)
+      ? Material(
+          color: Colors.white30,
+          borderRadius: BorderRadius.circular(10.0),
+          child: InkWell(
+            onTap: () => _isPlayerTeamedUp
+                ? swapSeat(seatNo, team)
+                : selectSeat(seatNo, team),
+            borderRadius: BorderRadius.circular(10.0),
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              child: Icon(
+                _isPlayerTeamedUp ? Icons.swap_horiz_sharp : Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      : Container(
+          padding: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            color: Colors.white30,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                child: Text(
+                  game.players[seatNo].name,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  game.players[seatNo].id,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+
+  selectSeat(int seatNo, bool team) {
+    if (isHost) {
+      game.players[seatNo] = Player(id, name.value, team: team);
       _isPlayerTeamedUp = true;
-    });
+      setState(() {});
+    } else {
+      //  Request host for seat
+    }
+  }
+
+  swapSeat(int seatNo, bool team) {
+    if (isHost) {
+      int currentSeat = game.getPlayerSeat(id);
+      print("Current Seat $currentSeat");
+      if (currentSeat > 0) {
+        game.players[currentSeat] = null;
+        game.players[seatNo] = Player(id, name.value, team: team);
+      }
+      setState(() {});
+    } else {
+      //  Request host to swap seat
+    }
+  }
+
+  hostOnDataHandler(String data) {
+    List<String> message = decode(data);
+    int code = int.parse(message[0]);
+
+    switch (code) {
+      case REQUEST_CONN:
+        String response = encode([ACCEPT_CONN.toString(), name.value]);
+        udp.sendData(response, message[1]);
+        break;
+    }
+  }
+
+  startGame() {
+    //  Check for all players
   }
 }

@@ -16,6 +16,7 @@ void main() async {
       [DeviceOrientation.landscapeLeft]);
 
   myIP = await Wifi.ip;
+  print("My IP: $myIP");
 
   await SystemChrome.setEnabledSystemUIOverlays([]);
   SharedPreferences pref = await SharedPreferences.getInstance();
