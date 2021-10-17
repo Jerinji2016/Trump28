@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trump28/screens/join_game.dart';
 import 'package:trump28/screens/player_select.dart';
 
+import 'modals/game.dart';
 import 'screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/waiting_lobby.dart';
@@ -26,7 +27,7 @@ class Routes {
       case JOIN_GAME:
         return MaterialPageRoute(builder: (_) => JoinGame());
       case WAITING_LOBBY:
-        if (args is int || args is String)
+        if (args is Game)
           return MaterialPageRoute(builder: (_) => WaitingLobby(args));
         else
           return MaterialPageRoute(builder: (_) => PageNotFound());

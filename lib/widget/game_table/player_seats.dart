@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trump28/modals/game.dart';
+import 'package:trump28/modals/player.dart';
 
 class PlayerSeats extends StatefulWidget {
   const PlayerSeats({Key? key}) : super(key: key);
@@ -8,51 +11,64 @@ class PlayerSeats extends StatefulWidget {
 }
 
 class _PlayerSeatsState extends State<PlayerSeats> {
-  static const int P1 = 1, P2 = 2, P3 = 3, P4 = 4, P5 = 5, P6 = 6;
-
-  final seats = const {};
-
   @override
   void initState() {
     super.initState();
-    initSeats();
-  }
-
-  void initSeats() {
-
   }
 
   @override
   Widget build(BuildContext context) {
+    Game game = Provider.of<Game>(context);
+
     return Stack(
-      children: [
-        Seat(),
-      ],
+      children: game.players
+          .map(
+            (playerIndex) => Seat(playerIndex),
+          )
+          .toList(),
     );
   }
 }
 
 class Seat extends StatelessWidget {
+  final Player player;
 
-  final double? top, left, right, bottom;
+  const Seat(this.player, {Key? key}) : super(key: key);
 
-  const Seat({Key? key, this.top, this.left, this.right, this.bottom}) : super(key: key);
+  Alignment _getPlayerSeatAlignment(gameData) {
+    switch (player.seatPosition) {
+      case Player.two:
+        return (gameData.type == GameType.FourPlayer) ? Alignment.centerLeft : Alignment(-0.85, 0.6);
+      case Player.three:
+        return (gameData.type == GameType.FourPlayer) ? Alignment.topCenter : Alignment(-0.8, -0.7);
+      case Player.four:
+        return (gameData.type == GameType.FourPlayer) ? Alignment.centerRight : Alignment.topCenter;
+      case Player.five:
+        return Alignment(0.8, -0.7);
+      case Player.six:
+        return Alignment(0.85, 0.6);
+      default:
+        return Alignment.bottomCenter;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      bottom: bottom,
-      child: SizedBox(
-        height: size.height / 10,
-        width: size.width / 10,
-        child: Container(
-          color: Colors.green,
-        ),
-      ),
+
+    Game gameData = Provider.of<Game>(context, listen: false);
+
+    return Builder(
+      builder: (context) {
+        return Align(
+          alignment: _getPlayerSeatAlignment(gameData),
+          child: SizedBox(
+            height: size.height / 8,
+            width: size.width / 7,
+            child: player.widget,
+          ),
+        );
+      },
     );
   }
 }

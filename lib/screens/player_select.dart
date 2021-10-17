@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trump28/modals/game.dart';
 import 'package:trump28/routes.dart';
 
 import '../main.dart';
@@ -83,7 +84,7 @@ class _PlayerSelectState extends State<PlayerSelect> {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(15.0),
-                          onTap: () => _createGame(4),
+                          onTap: () => _createGame(GameType.FourPlayer),
                           splashColor: Colors.transparent,
                           highlightColor: Colors.blueGrey[800],
                           child: Container(
@@ -113,7 +114,7 @@ class _PlayerSelectState extends State<PlayerSelect> {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(15.0),
-                          onTap: () => _createGame(6),
+                          onTap: () => _createGame(GameType.SixPlayer),
                           splashColor: Colors.transparent,
                           highlightColor: Colors.blueGrey[800],
                           child: Container(
@@ -143,13 +144,13 @@ class _PlayerSelectState extends State<PlayerSelect> {
     );
   }
 
-  void _createGame(int noOfPlayers) async {
-    print('_PlayerSelectState._createGame: $noOfPlayers');
+  void _createGame(GameType gameType) async {
+    print('_PlayerSelectState._createGame: $gameType');
 
     Navigator.pushNamed(
       context,
       Routes.WAITING_LOBBY,
-      arguments: noOfPlayers,
+      arguments: Game.create(gameType),
     );
   }
 }

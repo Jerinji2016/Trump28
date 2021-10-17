@@ -1,6 +1,6 @@
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String TITLE_BAR = "titleBar";
 
-String? name;
-SharedPreferences? preferences;
+late SharedPreferences preferences;

@@ -19,12 +19,7 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  if (preferences == null) preferences = await SharedPreferences.getInstance();
-
-  if (name == null) {
-    String? _name = preferences?.getString("name");
-    name = (_name == null) ? "Player" : _name;
-  }
+  preferences = await SharedPreferences.getInstance();
 
   runApp(
     MaterialApp(

@@ -4,8 +4,7 @@ import 'player_seats.dart';
 import 'table_bg.dart';
 
 class GameTable extends StatefulWidget {
-  final int noOfPlayers;
-  const GameTable(this.noOfPlayers, {Key? key}) : super(key: key);
+  const GameTable({Key? key}) : super(key: key);
 
   @override
   _GameTableState createState() => _GameTableState();
@@ -14,13 +13,16 @@ class GameTable extends StatefulWidget {
 class _GameTableState extends State<GameTable> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          TableBackground(),
-          PlayerSeats(),
-        ],
-      ),
+    print(0xb);
+
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: 20.0, left: 80.0, right: 80.0, top: 20.0),
+          child: TableBackground(),
+        ),
+        PlayerSeats(),
+      ],
     );
   }
 }
