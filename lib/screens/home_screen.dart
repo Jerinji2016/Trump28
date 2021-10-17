@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trump28/main.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/routes.dart';
+import 'package:trump28/widget/toast.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -29,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
               flex: 4,
-              child: Container(
+              child: GestureDetector(
+                onTap: () {
+                  Toast.show(context, "Welcome to Trump28\nNice to meet you!", Toast.LENGTH_LONG);
+                },
                 child: Center(
                   //  TODO : Add animation to logo text via perspective
                   //  https://medium.com/flutter/perspective-on-flutter-6f832f4d912e
