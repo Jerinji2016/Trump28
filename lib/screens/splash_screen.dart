@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trump28/globals.dart';
 
 import '../routes.dart';
 
@@ -14,8 +15,21 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
+    _initialize();
+  }
+
+  void _initialize() async {
+    String? _id = preferences.getString("id");
+
+    if(_id == null) {
+      Future.delayed(Duration(seconds: 1)).then(
+        (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
+      );
+      return;
+    }
+
     Future.delayed(Duration(seconds: 1)).then(
-      (val) => Navigator.pushReplacementNamed(context, Routes.HOME),
+          (val) => Navigator.pushReplacementNamed(context, Routes.HOME),
     );
   }
 

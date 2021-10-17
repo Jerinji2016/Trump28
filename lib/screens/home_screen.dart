@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trump28/main.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/routes.dart';
+import 'package:trump28/widget/gradient_background.dart';
 import 'package:trump28/widget/toast.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,17 +16,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              background,
-              primary,
-            ],
-          ),
-        ),
+      body: GradientBackground(
+        colors: [
+          background,
+          primary,
+        ],
         child: Column(
           children: [
             Expanded(

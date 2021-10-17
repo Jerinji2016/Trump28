@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trump28/screens/auth/login.dart';
+import 'package:trump28/screens/auth/phone_auth.dart';
 import 'package:trump28/screens/join_game.dart';
 import 'package:trump28/screens/player_select.dart';
 
@@ -10,6 +12,8 @@ import 'screens/waiting_lobby.dart';
 
 class Routes {
   static const String SPLASH = "/";
+  static const String LOGIN = "/login";
+  static const String PHONE_AUTH = "/login/phone_auth";
   static const String HOME = "/home";
   static const String PLAYER_SELECT = "/player-select";
   static const String JOIN_GAME = "/join-game";
@@ -20,6 +24,10 @@ class Routes {
     switch (settings.name) {
       case SPLASH:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+      case LOGIN:
+        return MaterialPageRoute(builder: (_) => Login());
+      case PHONE_AUTH:
+        return MaterialPageRoute(builder: (_) => PhoneAuth());
       case HOME:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case PLAYER_SELECT:
@@ -29,8 +37,9 @@ class Routes {
       case WAITING_LOBBY:
         if (args is Game)
           return MaterialPageRoute(builder: (_) => WaitingLobby(args));
-        else
+        else {
           return MaterialPageRoute(builder: (_) => PageNotFound());
+        }
       default:
         return MaterialPageRoute(builder: (_) => PageNotFound());
     }
