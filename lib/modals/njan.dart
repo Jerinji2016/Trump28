@@ -1,4 +1,6 @@
-class Njan {
+import 'package:flutter/material.dart';
+
+class Njan extends ChangeNotifier {
   static Njan _instance = Njan._();
 
   factory Njan() => _instance;
@@ -22,4 +24,6 @@ class Njan {
   late String? email;
 
   late bool isLoggedIn = false;
+
+  void notify() => notifyListeners();
 }

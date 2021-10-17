@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:trump28/modals/njan.dart';
 
 class Firestore {
   static const ROOMS = "rooms";
@@ -21,4 +21,9 @@ class Firestore {
   }
 
   static Future<DocumentSnapshot<Object?>> getUser(String id) async => await FirebaseFirestore.instance.collection(USERS).doc(id).get();
+
+  static Future<void> updateName(String name) async {
+    Njan njan = Njan();
+    await FirebaseFirestore.instance.collection(USERS).doc(njan.id).update({"name": name});
+  }
 }
