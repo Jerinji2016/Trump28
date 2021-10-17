@@ -60,8 +60,6 @@ class Toast {
     await Future.delayed(Duration(seconds: duration));
     ss(() => _opacity = 0);
     await Future.delayed(Duration(milliseconds: 300));
-
-    print("remove overlay");
     entry.remove();
   }
 }
