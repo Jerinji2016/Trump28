@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trump28/globals.dart';
+import 'package:trump28/modals/njan.dart';
+import 'package:trump28/utils/firestore.dart';
 
 import '../routes.dart';
 
@@ -19,14 +22,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _initialize() async {
-    String? _id = preferences.getString("id");
+    User? user = FirebaseAuth.instance.currentUser;
 
-    if(_id == null) {
+    if(user == null) {
       Future.delayed(Duration(seconds: 1)).then(
         (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
       );
       return;
     }
+
+    DocumentSnapshot userSnap = await Firestore.getUser(user.uid);
+    Map? userMap = userSnap.data() != null ? userSnap.data() as Map : null;
+    if (userMap == null) {
+      Future.delayed(Duration(seconds: 1)).then(
+            (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
+      );
+      return;
+    }
+    else
+      Njan.initialize(userMap..putIfAbsent("id", () => user.uid));
 
     Future.delayed(Duration(seconds: 1)).then(
           (val) => Navigator.pushReplacementNamed(context, Routes.HOME),

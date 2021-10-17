@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+  Offset _offset = Offset(0, 0);
     return Scaffold(
       body: GradientBackground(
         colors: [
@@ -33,15 +35,45 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
               flex: 4,
-              child: GestureDetector(
-                onTap: () {
-                  Toast.show(context, "Welcome to Trump28\nNice to meet you!", Toast.LENGTH_LONG);
-                },
-                child: Center(
-                  //  TODO : Add animation to logo text via perspective
-                  //  https://medium.com/flutter/perspective-on-flutter-6f832f4d912e
-                  child: Trump28(),
-                ),
+              child: Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Toast.show(context, "Welcome to Trump28\nNice to meet you!", Toast.LENGTH_LONG);
+                    },
+                    child: Center(
+                      child: Trump28(),
+                    ),
+                  ),
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10.0),
+                        onTap: _logOut,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.logout,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 5.0),
+                              Text(
+                                "Log out",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -274,4 +306,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
+
+  void _logOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, Routes.LOGIN);
+  }
 }
