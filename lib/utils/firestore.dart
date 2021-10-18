@@ -5,6 +5,7 @@ class Firestore {
   static const ROOMS = "rooms";
   static const USERS = "users";
 
+  /// User Actions
   static Future<bool> checkRoomIdExists(String id) async => (await FirebaseFirestore.instance.collection(ROOMS).doc(id).get()).exists;
 
   static Future<bool> checkUserExists(String id) async => (await FirebaseFirestore.instance.collection(USERS).doc(id).get()).exists;
@@ -26,5 +27,10 @@ class Firestore {
     print('Firestore.updateName: $name');
     Njan njan = Njan();
     await FirebaseFirestore.instance.collection(USERS).doc(njan.id).update({"name": name});
+  }
+
+  /// Game Table Action
+  static Future initializeRoom() async {
+    Njan njan = Njan();
   }
 }
