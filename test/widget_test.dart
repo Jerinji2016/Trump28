@@ -7,8 +7,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:trump28/main.dart';
 import 'package:trump28/screens/splash_screen.dart';
 
 void main() {

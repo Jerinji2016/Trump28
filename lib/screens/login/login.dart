@@ -5,7 +5,6 @@ import 'package:trump28/res/font_map/custom_icons_icons.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/routes.dart';
 import 'package:trump28/screens/login/phone_auth.dart';
-import 'package:trump28/utils/firestore.dart';
 import 'package:trump28/utils/loading_dialog.dart';
 import 'package:trump28/utils/user_authentication.dart';
 import 'package:trump28/widget/gradient_background.dart';

@@ -13,9 +13,9 @@ class TableBackground extends StatelessWidget {
 }
 
 class Table extends CustomPainter {
-  double INNER_MARGIN = 25;
-  double OUTER_MARGIN = 10;
-  double BOTTOM_MARGIN = 16;
+  static const double _INNER_MARGIN = 25;
+  static const double _OUTER_MARGIN = 10;
+  static const double _BOTTOM_MARGIN = 16;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -26,32 +26,32 @@ class Table extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     Path tableOut = Path();
-    tableOut.moveTo(cx, OUTER_MARGIN);
-    tableOut.lineTo(cx + (cx * .3), OUTER_MARGIN);
+    tableOut.moveTo(cx, _OUTER_MARGIN);
+    tableOut.lineTo(cx + (cx * .3), _OUTER_MARGIN);
     tableOut.quadraticBezierTo(
-      (2 * cx) - OUTER_MARGIN,
-      OUTER_MARGIN,
-      (2 * cx) - OUTER_MARGIN,
+      (2 * cx) - _OUTER_MARGIN,
+      _OUTER_MARGIN,
+      (2 * cx) - _OUTER_MARGIN,
       cy,
     );
     tableOut.quadraticBezierTo(
-      (2 * cx) - OUTER_MARGIN,
-      (2 * cy) - OUTER_MARGIN,
+      (2 * cx) - _OUTER_MARGIN,
+      (2 * cy) - _OUTER_MARGIN,
       cx + (cx * .3),
-      (2 * cy) - OUTER_MARGIN,
+      (2 * cy) - _OUTER_MARGIN,
     );
-    tableOut.lineTo(cx - (cx * .3), (2 * cy) - OUTER_MARGIN);
+    tableOut.lineTo(cx - (cx * .3), (2 * cy) - _OUTER_MARGIN);
     tableOut.quadraticBezierTo(
-      OUTER_MARGIN,
-      (2 * cy) - OUTER_MARGIN,
-      OUTER_MARGIN,
+      _OUTER_MARGIN,
+      (2 * cy) - _OUTER_MARGIN,
+      _OUTER_MARGIN,
       cy,
     );
     tableOut.quadraticBezierTo(
-      OUTER_MARGIN,
-      OUTER_MARGIN,
+      _OUTER_MARGIN,
+      _OUTER_MARGIN,
       cx - (cx * .3),
-      OUTER_MARGIN,
+      _OUTER_MARGIN,
     );
 
     tableOut.close();
@@ -62,32 +62,32 @@ class Table extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     Path tableIn = Path();
-    tableIn.moveTo(cx, INNER_MARGIN);
-    tableIn.lineTo(cx + (cx * .3), INNER_MARGIN);
+    tableIn.moveTo(cx, _INNER_MARGIN);
+    tableIn.lineTo(cx + (cx * .3), _INNER_MARGIN);
     tableIn.quadraticBezierTo(
-      (2 * cx) - INNER_MARGIN,
-      INNER_MARGIN,
-      (2 * cx) - INNER_MARGIN,
+      (2 * cx) - _INNER_MARGIN,
+      _INNER_MARGIN,
+      (2 * cx) - _INNER_MARGIN,
       cy,
     );
     tableIn.quadraticBezierTo(
-      (2 * cx) - INNER_MARGIN,
-      (2 * cy) - BOTTOM_MARGIN,
+      (2 * cx) - _INNER_MARGIN,
+      (2 * cy) - _BOTTOM_MARGIN,
       cx + (cx * .3),
-      (2 * cy) - BOTTOM_MARGIN,
+      (2 * cy) - _BOTTOM_MARGIN,
     );
-    tableIn.lineTo(cx - (cx * .3), (2 * cy) - BOTTOM_MARGIN);
+    tableIn.lineTo(cx - (cx * .3), (2 * cy) - _BOTTOM_MARGIN);
     tableIn.quadraticBezierTo(
-      INNER_MARGIN,
-      (2 * cy) - BOTTOM_MARGIN,
-      INNER_MARGIN,
+      _INNER_MARGIN,
+      (2 * cy) - _BOTTOM_MARGIN,
+      _INNER_MARGIN,
       cy,
     );
     tableIn.quadraticBezierTo(
-      INNER_MARGIN,
-      INNER_MARGIN,
+      _INNER_MARGIN,
+      _INNER_MARGIN,
       cx - (cx * .3),
-      INNER_MARGIN,
+      _INNER_MARGIN,
     );
 
     tableIn.close();
