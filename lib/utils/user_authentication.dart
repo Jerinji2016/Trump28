@@ -29,9 +29,16 @@ class UserAuthentication {
   }
 
   static Future<void> setUpUser(UserCredential userCredential) async {
+    print('UserAuthentication.setUpUser: ');
     User user = userCredential.user!;
-    DocumentSnapshot? userSnap = await Firestore.getUser(user.uid);
-    Map userMap = (userSnap.data() ?? {}) as Map;
+    DocumentSnapshot? userSnap;
+    try {
+      userSnap = await Firestore.getUser(user.uid);
+    } on Exception {
+      print(e);
+      userSnap = null;
+    }
+    Map userMap = (userSnap?.data() ?? {}) as Map;
     if (userMap.isEmpty)
       await _registerUser(user.uid, user.displayName!, user.phoneNumber, user.email);
     else

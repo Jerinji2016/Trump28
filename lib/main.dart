@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +17,14 @@ const Color accent = Color(0xFFE63E6D);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-  await SystemChrome.setEnabledSystemUIOverlays([]);
-
   await Firebase.initializeApp();
 
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+  await SystemChrome.setEnabledSystemUIOverlays([]);
   preferences = await SharedPreferences.getInstance();
+
+  //  TODO: Remove in production
+  _initEmulators();
 
   runApp(
     MaterialApp(
@@ -28,4 +33,17 @@ void main() async {
       initialRoute: Routes.SPLASH,
     ),
   );
+}
+
+/// Initialize emulator
+/// TODO: Remove in production
+void _initEmulators() async {
+  //  Authentication emulator
+  await FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+
+  //  Firestore emulator
+  FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
+
+  //  Cloud functions emulator
+  FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
 }
