@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-  Offset _offset = Offset(0, 0);
     return Scaffold(
       body: GradientBackground(
         colors: [
