@@ -30,9 +30,9 @@ class UserAuthentication {
 
   static Future<void> setUpUser(UserCredential userCredential) async {
     User user = userCredential.user!;
-    DocumentSnapshot userSnap = await Firestore.getUser(user.uid);
-    Map? userMap = userSnap.data() != null ? userSnap.data() as Map : null;
-    if (userMap == null)
+    DocumentSnapshot? userSnap = await Firestore.getUser(user.uid);
+    Map userMap = (userSnap.data() ?? {}) as Map;
+    if (userMap.isEmpty)
       await _registerUser(user.uid, user.displayName!, user.phoneNumber, user.email);
     else
       Njan.initialize(userMap..putIfAbsent("id", () => user.uid));

@@ -31,9 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    DocumentSnapshot userSnap = await Firestore.getUser(user.uid);
-    Map? userMap = userSnap.data() != null ? userSnap.data() as Map : null;
-    if (userMap == null) {
+    DocumentSnapshot? userSnap = await Firestore.getUser(user.uid);
+    Map userMap = (userSnap.data() ?? {}) as Map;
+    if (userMap.isEmpty) {
       Future.delayed(Duration(seconds: 1)).then(
             (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
       );
