@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   Njan njan = Njan();
 
   @override
@@ -229,22 +229,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    child: TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        focusedBorder: _whiteBorder,
-                        enabledBorder: _whiteBorder,
-                        labelText: njan.name,
-                        labelStyle: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 18,
-                        ),
-                        alignLabelWithHint: true,
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      focusedBorder: _whiteBorder,
+                      enabledBorder: _whiteBorder,
+                      labelText: njan.name,
+                      labelStyle: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 18,
                       ),
-                      keyboardType: TextInputType.phone,
-                      style: TextStyle(color: Colors.white),
+                      alignLabelWithHint: true,
                     ),
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(color: Colors.white),
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 30.0),
@@ -280,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await Firestore.updateName(newName);
     njan.name = newName;
-    njan.notify();
+    setState(() {});
   }
 
   Widget _iconButton(IconData icon, void Function() onTap, Color highlightColor) => Material(

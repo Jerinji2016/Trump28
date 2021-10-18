@@ -23,6 +23,7 @@ class Firestore {
   static Future<DocumentSnapshot<Object?>> getUser(String id) async => await FirebaseFirestore.instance.collection(USERS).doc(id).get();
 
   static Future<void> updateName(String name) async {
+    print('Firestore.updateName: $name');
     Njan njan = Njan();
     await FirebaseFirestore.instance.collection(USERS).doc(njan.id).update({"name": name});
   }
