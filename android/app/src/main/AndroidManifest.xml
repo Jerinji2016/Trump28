@@ -2,7 +2,6 @@
     package="com.dev.trump28">
    <application
         android:label="trump28"
-        <!-- TODO: remove usesCleartextTraffic-->
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
