@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trump28/modals/game.dart';
 import 'package:trump28/routes.dart';
+import 'package:trump28/utils/trump_api.dart';
 
 import '../main.dart';
 
@@ -147,10 +148,12 @@ class _PlayerSelectState extends State<PlayerSelect> {
   void _createGame(GameType gameType) async {
     print('_PlayerSelectState._createGame: $gameType');
 
+    var game = await TrumpApi.initializeRoom(gameType);
+
     Navigator.pushNamed(
       context,
       Routes.WAITING_LOBBY,
-      arguments: Game.create(gameType),
+      arguments: game,
     );
   }
 }
