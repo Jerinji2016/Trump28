@@ -31,7 +31,7 @@ class Routes {
       case JOIN_GAME:
         return MaterialPageRoute(builder: (_) => JoinGame());
       case WAITING_LOBBY:
-        if (args is Game)
+        if (args != null && args is Game)
           return MaterialPageRoute(builder: (_) => WaitingLobby(args));
         else {
           return MaterialPageRoute(builder: (_) => PageNotFound());

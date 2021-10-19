@@ -4,12 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:trump28/main.dart';
 import 'package:trump28/modals/njan.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/routes.dart';
 import 'package:trump28/utils/firestore.dart';
-import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/gradient_background.dart';
 import 'package:trump28/widget/toast.dart';
 
@@ -27,10 +25,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GradientBackground(
-        colors: [
-          background,
-          primary,
-        ],
         child: Column(
           children: [
             Expanded(

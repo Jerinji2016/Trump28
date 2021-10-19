@@ -10,8 +10,6 @@ import 'package:trump28/utils/user_authentication.dart';
 import 'package:trump28/widget/gradient_background.dart';
 import 'package:trump28/widget/toast.dart';
 
-import '../../main.dart';
-
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -65,10 +63,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GradientBackground(
-        colors: [
-          background,
-          primary,
-        ],
         child: Column(
           children: [
             Expanded(

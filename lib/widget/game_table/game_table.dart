@@ -13,8 +13,6 @@ class GameTable extends StatefulWidget {
 class _GameTableState extends State<GameTable> {
   @override
   Widget build(BuildContext context) {
-    print(0xb);
-
     return Stack(
       children: [
         Container(
