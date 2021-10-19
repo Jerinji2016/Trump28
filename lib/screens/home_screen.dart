@@ -9,6 +9,7 @@ import 'package:trump28/modals/njan.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/routes.dart';
 import 'package:trump28/utils/firestore.dart';
+import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/gradient_background.dart';
 import 'package:trump28/widget/toast.dart';
 
@@ -19,7 +20,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Njan njan = Njan();
 
   @override
@@ -37,9 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
               child: Stack(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Toast.show(context, "Welcome to Trump28\nNice to meet you!", Toast.LENGTH_LONG);
-                    },
+                    onTap: () => Toast.show(context, "Welcome to Trump28\nNice to meet you!", Toast.LENGTH_LONG),
                     child: Center(
                       child: Trump28(),
                     ),
