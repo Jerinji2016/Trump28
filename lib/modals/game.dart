@@ -13,24 +13,48 @@ class Game extends ChangeNotifier {
   final GameType type;
   GameStage stage;
 
+  final String roomId;
+
   static Game? instance;
 
   int get noOfSeats => type == GameType.FourPlayer ? 4 : 6;
 
   int get noOfPlayers => players.length;
 
+  int? get mySeat {
+    int myIndex = players.indexWhere((element) => element.id == Njan().id);
+    if(myIndex >= 0)
+      return players[myIndex].serverSeatPosition;
+    return null;
+  }
+
   final List<Player> players = [];
 
-  bool get haveIJoined => players.any((element) => element.id == Njan().id);
+  bool get haveIJoined => mySeat != null;
 
-  Game(this.type, this.stage) {
+  Game(this.roomId, this.type, this.stage) {
     instance = this;
   }
 
   factory Game.create(Map json) {
     GameType gameType = json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
     GameStage gameStage = GameStageExtension.fromCode(json["status"]);
-    Game game = Game(gameType, gameStage);
+    Game game = Game(json["roomID"], gameType, gameStage);
+    return game;
+  }
+
+  factory Game.parse(Map json) {
+    GameType gameType = json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
+    GameStage gameStage = GameStageExtension.fromCode(json["status"]);
+
+    Game game = new Game(json["roomID"], gameType, gameStage);
+    if (json.containsKey("players")) {
+      Map playersJson = json["players"];
+      playersJson.keys.forEach((seat) {
+        Map player = playersJson[seat]..update("serverSeat", (value) => int.parse(seat), ifAbsent: () => int.parse(seat));
+        game.players.add(Player.fromJson(player));
+      });
+    }
     return game;
   }
 

@@ -263,7 +263,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       return;
     }
     LoadingDialog loadingDialog = LoadingDialog(context);
-    loadingDialog.show("Loggin in...");
+    loadingDialog.show("Logging in...");
 
     await UserAuthentication.setUpUser(userCredential);
     loadingDialog.dismiss();

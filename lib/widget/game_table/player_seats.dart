@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trump28/modals/game.dart';
+import 'package:trump28/modals/njan.dart';
 import 'package:trump28/modals/player.dart';
 import 'package:trump28/utils/trump_api.dart';
+import 'package:trump28/widget/toast.dart';
 
 import '../../main.dart';
 
@@ -15,7 +17,7 @@ class PlayerSeats extends StatefulWidget {
 
 class _PlayerSeatsState extends State<PlayerSeats> {
   final Map<int, Player?> _playerSeatMap = {};
-  late final Game game;
+  late Game game;
 
   @override
   void initState() {
@@ -25,10 +27,20 @@ class _PlayerSeatsState extends State<PlayerSeats> {
   }
 
   @override
+  void didUpdateWidget(covariant PlayerSeats oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print('_PlayerSeatsState.didUpdateWidget: ');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    game = Provider.of<Game>(context);
+
+    _playerSeatMap.forEach((key, value) => _playerSeatMap[key] = null);
+
     game.players.forEach((element) {
       _playerSeatMap.update(
-        element.seatPosition,
+        element.serverSeatPosition,
         (value) => element,
       );
     });
@@ -45,12 +57,12 @@ class _PlayerSeatsState extends State<PlayerSeats> {
 
 class Seat extends StatelessWidget {
   final Player? player;
-  final int seatNo;
+  final int defaultSeatNo;
 
-  const Seat(this.player, this.seatNo, {Key? key}) : super(key: key);
+  Seat(this.player, this.defaultSeatNo, {Key? key}) : super(key: key);
 
   Alignment _getPlayerSeatAlignment(Game game) {
-    int seatPosition = (game.haveIJoined ? player?.seatPosition : player?.serverSeatPosition) ?? seatNo;
+    int seatPosition = player?.serverSeatPosition ?? defaultSeatNo;
     switch (seatPosition) {
       case Player.two:
         return (game.type == GameType.FourPlayer) ? Alignment.centerLeft : Alignment(-0.85, 0.6);
@@ -71,8 +83,7 @@ class Seat extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    Game game = Provider.of<Game>(context, listen: false);
-
+    Game game = Provider.of<Game>(context);
     return Builder(
       builder: (context) {
         return Align(
@@ -80,16 +91,29 @@ class Seat extends StatelessWidget {
           child: SizedBox(
             height: size.height / 8,
             width: size.width / 7,
-            child: player?.widget ?? _joinSeat(),
+            child: player?.widget ?? _joinSeat(context, game),
           ),
         );
       },
     );
   }
 
-  Widget _joinSeat() => GestureDetector(
-    onTap: () => TrumpApi.joinSeat(seatNo),
-    child: Row(
+  Widget _joinSeat(BuildContext context, Game game) => GestureDetector(
+        onTap: () async {
+          Map result = game.haveIJoined
+              ? await TrumpApi.swapSeat(
+                  game.roomId,
+                  game.players
+                      .firstWhere(
+                        (element) => element.id == Njan().id,
+                      )
+                      .serverSeatPosition,
+                  defaultSeatNo,
+                )
+              : await TrumpApi.joinSeat(defaultSeatNo, game.roomId);
+          if (!result["status"]) Toast.show(context, result["message"], Toast.LENGTH_SHORT);
+        },
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -112,15 +136,12 @@ class Seat extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.add,
-                            color: Colors.white,
+                          game.haveIJoined ? Icons.swap_horiz : Icons.add,
+                          color: Colors.white,
                         ),
                         Text(
-                          "Join",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                          ),
+                          game.haveIJoined ? "Swap" : "Join",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -130,5 +151,5 @@ class Seat extends StatelessWidget {
             ),
           ],
         ),
-  );
+      );
 }

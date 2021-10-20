@@ -10,12 +10,14 @@ class Player {
   final int serverSeatPosition;
   late final int seatPosition;
 
-  Player._(this.id, this.name, this.serverSeatPosition, this.seatPosition);
+  Player._(this.id, this.name, this.serverSeatPosition);
 
-  factory Player.fromJson(Map json, int mySeat) {
-    int _seatPosition = (json["serverSeat"] + 5 - mySeat) % 6;
-    return Player._(json["id"], json["name"], json["serverSeat"], _seatPosition);
+  factory Player.fromJson(Map json) {
+    // int _seatPosition = (json["serverSeat"] + 5 - mySeat) % 6;
+    return Player._(json["id"], json["name"], json["serverSeat"]);
   }
+
+  Map<String, dynamic> get map => {"id": id, "name": name, "serverSeat": serverSeatPosition};
 
   Widget get widget {
     return Stack(
@@ -58,7 +60,7 @@ class Player {
                     ),
                     Container(
                       child: Text(
-                        "#$id",
+                        "#${id.substring(0, 8)}...",
                         style: TextStyle(
                           fontSize: 9,
                           color: Colors.white,

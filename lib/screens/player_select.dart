@@ -146,8 +146,6 @@ class _PlayerSelectState extends State<PlayerSelect> {
   }
 
   void _createGame(GameType gameType) async {
-    print('_PlayerSelectState._createGame: $gameType');
-
     var game = await TrumpApi.initializeRoom(gameType);
 
     Navigator.pushNamed(

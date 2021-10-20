@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:trump28/modals/game.dart';
 import 'package:trump28/modals/njan.dart';
 
 class Firestore {
@@ -29,8 +30,15 @@ class Firestore {
     await FirebaseFirestore.instance.collection(USERS).doc(njan.id).update({"name": name});
   }
 
-  /// Game Table Action
-  static Future initializeRoom() async {
-    Njan njan = Njan();
+  static Stream<Game> getRoomStream(String roomId) async* {
+    Stream<DocumentSnapshot> snap = FirebaseFirestore.instance.collection(Firestore.ROOMS).doc(roomId).snapshots();
+    await for (final snapshot in snap)
+      if (snapshot.data() != null) {
+        try {
+          yield Game.parse(snapshot.data() as Map);
+        } catch (e) {
+          print(e);
+        }
+      }
   }
 }
