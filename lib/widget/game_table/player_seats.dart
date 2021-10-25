@@ -27,6 +27,12 @@ class _PlayerSeatsState extends State<PlayerSeats> {
   }
 
   @override
+  void dispose() {
+    TrumpApi.leaveSeat(game.roomId, game.mySeat);
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(covariant PlayerSeats oldWidget) {
     super.didUpdateWidget(oldWidget);
     print('_PlayerSeatsState.didUpdateWidget: ');

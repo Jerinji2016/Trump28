@@ -30,6 +30,20 @@ class Firestore {
     await FirebaseFirestore.instance.collection(USERS).doc(njan.id).update({"name": name});
   }
 
+  static Future getRoomDetails(String roomId) async {
+    DocumentSnapshot response = await FirebaseFirestore.instance.collection(ROOMS).doc(roomId).get();
+    Timestamp t = response["roomExpiry"];
+
+    print(DateTime.now());
+    print(DateTime.fromMillisecondsSinceEpoch(t.millisecondsSinceEpoch));
+
+    bool check = DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(t.millisecondsSinceEpoch));
+    print(":test: $check");
+    if (check) return false;
+    // DateTime roomValidityCheck = DateTime.fromMicrosecondsSinceEpoch(response["roomExpiry"]);
+    return response.data();
+  }
+
   static Stream<Game> getRoomStream(String roomId) async* {
     Stream<DocumentSnapshot> snap = FirebaseFirestore.instance.collection(Firestore.ROOMS).doc(roomId).snapshots();
     await for (final snapshot in snap)

@@ -38,12 +38,13 @@ void main() async {
 /// Initialize emulator
 /// TODO: Remove in production
 void _initEmulators() async {
+  var ip = "192.168.1.8";
   //  Authentication emulator
-  await FirebaseAuth.instance.useAuthEmulator("192.168.1.7", 9099);
+  await FirebaseAuth.instance.useAuthEmulator(ip, 9099);
 
   //  Firestore emulator
-  FirebaseFirestore.instance.useFirestoreEmulator("192.168.1.7", 8080);
+  FirebaseFirestore.instance.useFirestoreEmulator(ip, 8080);
 
   //  Cloud functions emulator
-  FirebaseFunctions.instance.useFunctionsEmulator("192.168.1.7", 5001);
+  FirebaseFunctions.instance.useFunctionsEmulator(ip, 5001);
 }

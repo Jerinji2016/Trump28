@@ -11,25 +11,22 @@ exports.createRoom = functions.https.onCall(async (data, context) => {
   var userDetails = await admin.firestore().doc(`users/${uid}`).get().then((snap) => snap.data());
   var roomID = userDetails["roomId"];
 
+  let date = new Date();
+  console.log(date);
+  date.setMinutes(date.getMinutes() + 30);
+  console.log(date);
+
   var roomData = {
     roomID: roomID,
     maxPlayers: maxPlayers,
-    status: 111
+    status: 111,
+    roomExpiry: admin.firestore.Timestamp.fromDate(date)
   };
 
   await admin.firestore().doc(`rooms/${roomID}`).set(roomData);
   roomID.id = roomID;
   console.log("room created successfully");
   return roomData;
-});
-
-//  ____JOIN ROOM 
-exports.joinRoom = functions.https.onCall(async (data, context) => {
-  let roomId = data["roomId"]
-  var uid = context.auth.uid;
-
-  var userDetails = await admin.firestore().doc(`users/${uid}`).get().then((snap) => snap.data());
-  console.log(userDetails);
 });
 
 //  ___JOIN SEAT

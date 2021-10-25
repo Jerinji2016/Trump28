@@ -54,7 +54,7 @@ class Player {
                   children: [
                     Container(
                       child: Text(
-                        name,
+                        name.length > 7 ? name.substring(0, 8) + "..." : name,
                         style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white, fontSize: 12),
                       ),
                     ),

@@ -5,6 +5,7 @@ import 'package:trump28/modals/njan.dart';
 /// Class for cloud function for Trump28
 class TrumpApi {
   static const CREATE_ROOM = "createRoom";
+  static const JOIN_ROOM = "joinRoom";
   static const JOIN_SEAT = "joinSeat";
   static const SWAP_SEAT = "swapSeat";
   static const LEAVE_SEAT = "leaveSeat";
@@ -44,6 +45,7 @@ class TrumpApi {
     print("response: ${response.data}");
     return response.data ?? false;
   }
+
   static Future<Map> leaveSeat(String roomId, seatNo) async {
     print('TrumpApi.leaveSeat: $seatNo');
     var callable = FirebaseFunctions.instance.httpsCallable(LEAVE_SEAT);
