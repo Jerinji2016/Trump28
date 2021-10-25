@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trump28/modals/game.dart';
 import 'package:trump28/utils/trump_api.dart';
-import 'package:trump28/widget/game_table/player_seats.dart';
-import 'package:trump28/widget/game_table/room_bg.dart';
 import 'package:trump28/widget/toast.dart';
+
+import 'room_bg/player_seats.dart';
+import 'room_bg/room_bg.dart';
 
 class WaitingLobby extends StatefulWidget {
   const WaitingLobby({Key? key}) : super(key: key);

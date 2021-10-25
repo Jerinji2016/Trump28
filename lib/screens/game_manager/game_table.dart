@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trump28/widget/game_table/player_seats.dart';
-import 'package:trump28/widget/game_table/room_bg.dart';
+
+import 'room_bg/player_seats.dart';
+import 'room_bg/room_bg.dart';
 
 class GameTable extends StatefulWidget {
   const GameTable({Key? key}) : super(key: key);
@@ -16,45 +17,26 @@ class _GameTableState extends State<GameTable> {
       children: [
         Column(
           children: [
-            Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: InkWell(
-                      splashColor: Colors.black38,
-                      borderRadius: BorderRadius.circular(50.0),
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.arrow_back_outlined,
-                          size: 36,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  alignment: Alignment.topLeft,
-                ),
-                Center(
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(50.0),
+                child: InkWell(
+                  splashColor: Colors.black38,
+                  borderRadius: BorderRadius.circular(50.0),
+                  onTap: () => Navigator.pop(context),
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 20.0,
-                    ),
-                    child: Text(
-                      "Waiting for players",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.arrow_back_outlined,
+                      size: 36,
+                      color: Colors.white,
                     ),
                   ),
-                )
-              ],
+                ),
+              ),
+              alignment: Alignment.topLeft,
             ),
             Expanded(
               child: Container(

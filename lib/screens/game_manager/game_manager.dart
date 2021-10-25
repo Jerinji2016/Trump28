@@ -37,7 +37,7 @@ class _GameManagerState extends State<GameManager> {
 
             for (Player player in oGame.players) {
               int nGamePlayerIndex = oGame.players.indexWhere((element) => element.id == player.id);
-              if (nGamePlayerIndex < 0) return true;
+              if ((nGamePlayerIndex < 0) && (oGame.stage != nGame.stage)) return true;
               if (player.map.toString() != nGame.players.elementAt(nGamePlayerIndex).map.toString()) return true;
             }
             return false;

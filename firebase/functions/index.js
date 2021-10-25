@@ -109,7 +109,7 @@ exports.leaveSeat = functions.https.onCall(async (data, context) => {
   console.log(roomDetails);
   var players = roomDetails["players"];
   if (players == null)
-    return {"status": false, "message": "No seat found"};
+    return { "status": false, "message": "No seat found" };
 
   delete players[`${seat}`];
 
