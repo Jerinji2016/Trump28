@@ -217,7 +217,7 @@ class _JoinGameState extends State<JoinGame> {
     var game = Game.create(response);
     Navigator.pushNamed(
       context,
-      Routes.WAITING_LOBBY,
+      Routes.GAME_MANAGER,
       arguments: game,
     );
   }

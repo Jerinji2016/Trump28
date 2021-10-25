@@ -150,7 +150,7 @@ class _PlayerSelectState extends State<PlayerSelect> {
 
     Navigator.pushNamed(
       context,
-      Routes.WAITING_LOBBY,
+      Routes.GAME_MANAGER,
       arguments: game,
     );
   }

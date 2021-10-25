@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trump28/screens/game_manager.dart';
 import 'package:trump28/screens/join_game.dart';
 import 'package:trump28/screens/player_select.dart';
 
@@ -7,7 +8,6 @@ import 'modals/game.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login.dart';
 import 'screens/splash_screen.dart';
-import 'screens/waiting_lobby.dart';
 
 class Routes {
   static const String SPLASH = "/";
@@ -15,7 +15,7 @@ class Routes {
   static const String HOME = "/home";
   static const String PLAYER_SELECT = "/player-select";
   static const String JOIN_GAME = "/join-game";
-  static const String WAITING_LOBBY = "/waiting-lobby";
+  static const String GAME_MANAGER = "/game-manager";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     var args = settings.arguments;
@@ -30,12 +30,11 @@ class Routes {
         return MaterialPageRoute(builder: (_) => PlayerSelect());
       case JOIN_GAME:
         return MaterialPageRoute(builder: (_) => JoinGame());
-      case WAITING_LOBBY:
+      case GAME_MANAGER:
         if (args != null && args is Game)
-          return MaterialPageRoute(builder: (_) => WaitingLobby(args));
-        else {
+          return MaterialPageRoute(builder: (_) => GameManager(args));
+        else
           return MaterialPageRoute(builder: (_) => PageNotFound());
-        }
       default:
         return MaterialPageRoute(builder: (_) => PageNotFound());
     }
