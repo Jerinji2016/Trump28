@@ -1,18 +1,18 @@
 
 enum GameStage {
-  /// Players to join
+  /// Players to join               [111]
   WaitingLobby,
 
-  /// Dealing
+  /// Dealing                       [112]
   Dealing,
 
-  /// Game in progress
+  /// Game in progress              [113]
   InGame,
 
-  /// When Game complete / result
+  /// When Game complete / result   [114]
   GameOver,
 
-  /// Player has disconnected
+  /// Player has disconnected       [119]
   ErrorPlayerMissing,
 }
 

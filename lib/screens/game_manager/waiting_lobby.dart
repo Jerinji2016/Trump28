@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trump28/modals/game.dart';
-import 'package:trump28/routes.dart';
 import 'package:trump28/utils/trump_api.dart';
-import 'package:trump28/widget/game_table/game_table.dart';
+import 'package:trump28/widget/game_table/player_seats.dart';
+import 'package:trump28/widget/game_table/room_bg.dart';
 import 'package:trump28/widget/toast.dart';
 
 class WaitingLobby extends StatefulWidget {
@@ -14,10 +15,11 @@ class WaitingLobby extends StatefulWidget {
 }
 
 class _WaitingLobbyState extends State<WaitingLobby> {
+  late Game game;
   @override
   Widget build(BuildContext context) {
     print('_WaitingLobbyState.build: ');
-    Game game = Provider.of<Game>(context);
+    game = Provider.of<Game>(context);
     return Stack(
       children: [
         Column(
@@ -68,7 +70,12 @@ class _WaitingLobbyState extends State<WaitingLobby> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: GameTable(),
+                child: Stack(
+                  children: [
+                    RoomTable(),
+                    PlayerSeats(),
+                  ],
+                ),
               ),
             ),
           ],
@@ -142,6 +149,8 @@ class _WaitingLobbyState extends State<WaitingLobby> {
   }
 
   void _onStartTapped() async {
-    Navigator.pushReplacementNamed(context, Routes.GAME_MANAGER);
+    await FirebaseFirestore.instance.collection("rooms").doc(game.roomId).update({
+      "status": 112
+    });
   }
 }

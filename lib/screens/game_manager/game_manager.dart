@@ -3,12 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:trump28/enums/game_stage.dart';
 import 'package:trump28/modals/game.dart';
 import 'package:trump28/modals/player.dart';
-import 'package:trump28/screens/waiting_lobby.dart';
+import 'package:trump28/screens/game_manager/game_table.dart';
+import 'package:trump28/screens/game_manager/waiting_lobby.dart';
 import 'package:trump28/utils/firestore.dart';
 import 'package:trump28/widget/gradient_background.dart';
 
+import 'player_missing.dart';
+
 class GameManager extends StatefulWidget {
   final Game game;
+
   const GameManager(this.game, {Key? key}) : super(key: key);
 
   @override
@@ -40,21 +44,17 @@ class _GameManagerState extends State<GameManager> {
           },
           builder: (context, child) {
             Game game = Provider.of<Game>(context);
-            switch(game.stage){
+            switch (game.stage) {
               case GameStage.WaitingLobby:
                 return WaitingLobby();
               case GameStage.Dealing:
-                // TODO: Handle this case.
-                break;
               case GameStage.InGame:
-                // TODO: Handle this case.
-                break;
+                return GameTable();
               case GameStage.GameOver:
                 // TODO: Handle this case.
                 break;
               case GameStage.ErrorPlayerMissing:
-                // TODO: Handle this case.
-                break;
+                return PlayerMissing();
             }
             return Container();
           },

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trump28/screens/game_manager.dart';
+import 'package:trump28/screens/game_manager/game_manager.dart';
 import 'package:trump28/screens/join_game.dart';
 import 'package:trump28/screens/player_select.dart';
 

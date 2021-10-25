@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
-class TableBackground extends StatelessWidget {
+class RoomTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CustomPaint(
-        size: MediaQuery.of(context).size,
-        painter: Table(),
+    return Container(
+      padding: EdgeInsets.only(bottom: 20.0, left: 80.0, right: 80.0, top: 20.0),
+      child: Center(
+        child: CustomPaint(
+          size: MediaQuery.of(context).size,
+          painter: TablePainter(),
+        ),
       ),
     );
   }
 }
 
-class Table extends CustomPainter {
+class TablePainter extends CustomPainter {
   static const double _INNER_MARGIN = 25;
   static const double _OUTER_MARGIN = 10;
   static const double _BOTTOM_MARGIN = 16;
