@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trump28/enums/game_stage.dart';
 import 'package:trump28/modals/game.dart';
 import 'package:trump28/modals/njan.dart';
 import 'package:trump28/modals/player.dart';
@@ -106,7 +107,9 @@ class Seat extends StatelessWidget {
 
   Widget _joinSeat(BuildContext context, Game game) => GestureDetector(
         onTap: () async {
-          Map result = game.haveIJoined
+          if (game.stage != GameStage.WaitingLobby)
+            return;
+          Map result = (game.haveIJoined
               ? await TrumpApi.swapSeat(
                   game.roomId,
                   game.players
@@ -116,7 +119,7 @@ class Seat extends StatelessWidget {
                       .serverSeatPosition,
                   defaultSeatNo,
                 )
-              : await TrumpApi.joinSeat(defaultSeatNo, game.roomId);
+              : await TrumpApi.joinSeat(defaultSeatNo, game.roomId));
           if (!result["status"]) Toast.show(context, result["message"], Toast.LENGTH_SHORT);
         },
         child: Row(
