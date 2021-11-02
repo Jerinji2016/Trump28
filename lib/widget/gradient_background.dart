@@ -8,16 +8,18 @@ class GradientBackground extends StatelessWidget {
   const GradientBackground({
     Key? key,
     this.child,
-    this.colors: const [background, primary],
+    this.colors: const [
+      primary,
+      background,
+    ],
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+        gradient: RadialGradient(
+          radius: 1.2,
           colors: colors,
         ),
       ),

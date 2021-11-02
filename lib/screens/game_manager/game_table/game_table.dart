@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'room_bg/player_seats.dart';
-import 'room_bg/room_bg.dart';
+import '../room_bg/player_seats.dart';
+import '../room_bg/room_bg.dart';
+import 'player_hand.dart';
 
 class GameTable extends StatefulWidget {
   const GameTable({Key? key}) : super(key: key);
@@ -48,6 +49,7 @@ class _GameTableState extends State<GameTable> {
                   children: [
                     RoomTable(),
                     PlayerSeats(),
+                    PlayerHand(),
                   ],
                 ),
               ),
