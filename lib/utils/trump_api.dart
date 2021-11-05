@@ -1,5 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:trump28/modals/game.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/modals/njan.dart';
 
 /// Class for cloud function for Trump28

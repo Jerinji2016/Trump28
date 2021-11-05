@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trump28/enums/game_stage.dart';
 import 'package:trump28/main.dart';
-import 'package:trump28/modals/game.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/modals/njan.dart';
 import 'package:trump28/modals/player.dart';
 import 'package:trump28/utils/trump_api.dart';

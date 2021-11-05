@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:trump28/enums/game_stage.dart';
+import 'package:trump28/providers/game_hand.dart';
 
-import 'njan.dart';
-import 'player.dart';
+import '../modals/njan.dart';
+import '../modals/player.dart';
 
 enum GameType {
   SixPlayer,
@@ -27,6 +29,8 @@ class Game extends ChangeNotifier {
       return players[myIndex].serverSeatPosition;
     return null;
   }
+
+  GameHand myHand = GameHand();
 
   final List<Player> players = [];
 

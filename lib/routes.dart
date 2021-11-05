@@ -4,7 +4,7 @@ import 'package:trump28/screens/game_manager/game_manager.dart';
 import 'package:trump28/screens/join_game.dart';
 import 'package:trump28/screens/player_select.dart';
 
-import 'modals/game.dart';
+import 'providers/game.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login.dart';
 import 'screens/splash_screen.dart';

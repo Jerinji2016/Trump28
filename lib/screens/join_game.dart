@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:trump28/globals.dart';
-import 'package:trump28/modals/game.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/res/font_map/suits_icons.dart';
 import 'package:trump28/routes.dart';
 import 'package:trump28/utils/firestore.dart';

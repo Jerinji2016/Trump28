@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:trump28/modals/game.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/modals/njan.dart';
 
 class Firestore {

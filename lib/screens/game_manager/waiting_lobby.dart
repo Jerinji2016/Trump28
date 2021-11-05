@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trump28/modals/game.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/toast.dart';
 

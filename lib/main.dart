@@ -38,7 +38,7 @@ void main() async {
 /// Initialize emulator
 /// TODO: Remove in production
 void _initEmulators() async {
-  var ip = "192.168.1.8";
+  var ip = "192.168.1.6";
   //  Authentication emulator
   await FirebaseAuth.instance.useAuthEmulator(ip, 9099);
 
