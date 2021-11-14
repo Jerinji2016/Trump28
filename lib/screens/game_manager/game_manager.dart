@@ -5,6 +5,7 @@ import 'package:trump28/providers/game.dart';
 import 'package:trump28/screens/game_manager/game_table/game_table.dart';
 import 'package:trump28/screens/game_manager/waiting_lobby.dart';
 import 'package:trump28/utils/firestore.dart';
+import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/gradient_background.dart';
 
 import 'player_missing.dart';
@@ -19,6 +20,14 @@ class GameManager extends StatefulWidget {
 }
 
 class _GameManagerState extends State<GameManager> {
+  late Game game;
+
+  @override
+  void dispose() {
+    TrumpApi.leaveSeat(game.roomId, game.mySeat);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,20 +42,39 @@ class _GameManagerState extends State<GameManager> {
           },
           updateShouldNotify: (oGame, nGame) => true,
           builder: (context, child) {
-            Game game = Provider.of<Game>(context);
-            switch (game.stage) {
-              case GameStage.WaitingLobby:
-                return WaitingLobby();
-              case GameStage.Dealing:
-              case GameStage.InGame:
-                return GameTable();
-              case GameStage.GameOver:
-                // TODO: Handle this case.
-                break;
-              case GameStage.ErrorPlayerMissing:
-                return PlayerMissing();
-            }
-            return Container();
+            game = Provider.of<Game>(context);
+
+            return WillPopScope(
+              child: Builder(
+                builder: (context) {
+                  switch (game.stage) {
+                    case GameStage.WaitingLobby:
+                      return WaitingLobby();
+                    case GameStage.Dealing:
+                    case GameStage.InGame:
+                      return GameTable();
+                    case GameStage.GameOver:
+                      // TODO: Handle this case.
+                      break;
+                    case GameStage.ErrorPlayerMissing:
+                      return PlayerMissing();
+                  }
+                  return Center(
+                    child: Text(
+                      "Game status unknown: ${game.stage}",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              onWillPop: () async {
+                await TrumpApi.leaveSeat(game.roomId, game.mySeat);
+                return true;
+              },
+            );
           },
         ),
       ),

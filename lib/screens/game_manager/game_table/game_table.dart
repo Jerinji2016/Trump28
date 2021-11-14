@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:trump28/res/trump28.dart';
 
 import '../room_bg/player_seats.dart';
 import '../room_bg/room_bg.dart';
+import 'game_chat.dart';
 import 'player_hand.dart';
 
 class GameTable extends StatefulWidget {
@@ -16,6 +18,14 @@ class _GameTableState extends State<GameTable> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        Positioned(
+          top: 10,
+          right: -40,
+          child: Transform.scale(
+            scale: 0.5,
+            child: Trump28(),
+          ),
+        ),
         Column(
           children: [
             Container(
@@ -55,6 +65,11 @@ class _GameTableState extends State<GameTable> {
               ),
             ),
           ],
+        ),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          child: GameChat(),
         ),
       ],
     );

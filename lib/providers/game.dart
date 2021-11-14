@@ -12,12 +12,11 @@ enum GameType {
 }
 
 class Game extends ChangeNotifier {
+  final String roomId;
   final GameType type;
   GameStage stage;
 
-  final String roomId;
-
-  static Game? instance;
+  Game(this.roomId, this.type, this.stage);
 
   int get noOfSeats => type == GameType.FourPlayer ? 4 : 6;
 
@@ -25,8 +24,7 @@ class Game extends ChangeNotifier {
 
   int? get mySeat {
     int myIndex = players.indexWhere((element) => element.id == Njan().id);
-    if(myIndex >= 0)
-      return players[myIndex].serverSeatPosition;
+    if (myIndex >= 0) return players[myIndex].serverSeatPosition;
     return null;
   }
 
@@ -35,10 +33,6 @@ class Game extends ChangeNotifier {
   final List<Player> players = [];
 
   bool get haveIJoined => mySeat != null;
-
-  Game(this.roomId, this.type, this.stage) {
-    instance = this;
-  }
 
   factory Game.create(Map json) {
     GameType gameType = json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;

@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:trump28/modals/message.dart';
 import 'package:trump28/providers/game.dart';
 import 'package:trump28/modals/njan.dart';
 
 class Firestore {
   static const ROOMS = "rooms";
   static const USERS = "users";
+  static const CHAT = "chat";
 
   /// User Actions
   static Future<bool> checkRoomIdExists(String id) async => (await FirebaseFirestore.instance.collection(ROOMS).doc(id).get()).exists;
@@ -54,5 +57,37 @@ class Firestore {
           print(e);
         }
       }
+  }
+
+  static Stream<List<Message>> getChatStream(BuildContext context, String roomId) async* {
+    Stream<QuerySnapshot<Map<String, dynamic>>> querySnaps = FirebaseFirestore.instance
+        .collection(ROOMS)
+        .doc(roomId)
+        .collection(CHAT)
+        .orderBy(
+          "time",
+          descending: true,
+        )
+        .snapshots();
+    await for (final query in querySnaps) {
+      List<Message> messages = [];
+      try {
+        print('Firestore.getChatStream: ${query.size}');
+        query.docs.forEach((element) {
+          messages.add(Message(context, element.data()));
+        });
+        yield messages;
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  static Future<void> sendMessage(String playerId, String roomId, String message) async {
+    await FirebaseFirestore.instance.collection(ROOMS).doc(roomId).collection(CHAT).add({
+      "playerId": playerId,
+      "text": message,
+      "time": FieldValue.serverTimestamp(),
+    });
   }
 }
