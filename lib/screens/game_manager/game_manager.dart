@@ -8,6 +8,7 @@ import 'package:trump28/utils/firestore.dart';
 import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/gradient_background.dart';
 
+import 'game_over.dart';
 import 'player_missing.dart';
 
 class GameManager extends StatefulWidget {
@@ -50,24 +51,18 @@ class _GameManagerState extends State<GameManager> {
                   switch (game.stage) {
                     case GameStage.WaitingLobby:
                       return WaitingLobby();
-                    case GameStage.Dealing:
+                    case GameStage.AllPlayersReady:
+                    case GameStage.Dealing1:
+                    case GameStage.FirstAuction:
+                    case GameStage.Dealing2:
+                    case GameStage.FinalAuction:
                     case GameStage.InGame:
                       return GameTable();
                     case GameStage.GameOver:
-                      // TODO: Handle this case.
-                      break;
+                      return GameOver();
                     case GameStage.ErrorPlayerMissing:
                       return PlayerMissing();
                   }
-                  return Center(
-                    child: Text(
-                      "Game status unknown: ${game.stage}",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
                 },
               ),
               onWillPop: () async {
