@@ -68,14 +68,3 @@ extension GameStageExtension on GameStage {
     }
   }
 }
-
-/*
-* WaitingLobby
-* AllPlayersReady
-* Dealing1
-* FirstAuction
-* Dealing2
-* FinalAuction
-* InGame
-* GameOver
-* */
