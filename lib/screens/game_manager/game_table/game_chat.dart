@@ -13,16 +13,99 @@ class GameChat extends StatefulWidget {
   _GameChatState createState() => _GameChatState();
 }
 
-class _GameChatState extends State<GameChat> {
+class _GameChatState extends State<GameChat> with TickerProviderStateMixin {
   bool isChat = false;
+
+  late AnimationController _chatAnimationController;
+
+  @override
+  void initState() {
+    _chatAnimationController = new AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _chatAnimationController.dispose();
+    super.dispose();
+  }
 
   void _onChatButtonTapped() {
     setState(() => isChat = true);
+    _chatAnimationController.forward();
+  }
+
+  void _onChatClosed() async {
+    await _chatAnimationController.reverse();
+    setState(() => isChat = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return isChat ? Chat() : ChatButton(_onChatButtonTapped);
+    Size size = MediaQuery.of(context).size;
+    double maxHeight = size.height * 0.8;
+    double maxWidth = size.width * 0.3;
+
+    return isChat
+        ? AnimatedBuilder(
+            animation: _chatAnimationController,
+            builder: (BuildContext context, Widget? child) {
+              return Container(
+                constraints: BoxConstraints(
+                  maxHeight: maxHeight,
+                  maxWidth: maxWidth,
+                ),
+                height: Tween<double>(
+                  begin: 0,
+                  end: maxHeight,
+                ).animate(
+                  CurvedAnimation(
+                    parent: _chatAnimationController,
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                ).value,
+                width: Tween<double>(
+                  begin: 0,
+                  end: maxWidth,
+                ).animate(
+                  CurvedAnimation(
+                    parent: _chatAnimationController,
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                ).value,
+                child: child!,
+              );
+            },
+            child: Stack(
+              children: [
+                Chat(),
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: InkWell(
+                      onTap: _onChatClosed,
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Container(
+                        padding: EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : ChatButton(_onChatButtonTapped);
   }
 }
 
@@ -40,7 +123,6 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     game = Provider.of<Game>(context);
 
     return Material(
@@ -53,8 +135,6 @@ class _ChatState extends State<Chat> {
       ),
       color: Colors.black12.withOpacity(0.7),
       child: Container(
-        height: size.height * 0.8,
-        width: size.width * 0.3,
         padding: EdgeInsets.only(top: 10.0),
         child: Column(
           children: [

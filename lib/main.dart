@@ -20,11 +20,11 @@ void main() async {
   await Firebase.initializeApp();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-  await SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   preferences = await SharedPreferences.getInstance();
 
   //  TODO: Remove in production
-  _initEmulators();
+  await _initEmulators();
 
   runApp(
     MaterialApp(
@@ -37,8 +37,8 @@ void main() async {
 
 /// Initialize emulator
 /// TODO: Remove in production
-void _initEmulators() async {
-  var ip = "192.168.174.178";
+Future<void> _initEmulators() async {
+  var ip = "192.168.1.7";
   print("initialising emulator configs... $ip");
   //  Authentication emulator
   await FirebaseAuth.instance.useAuthEmulator(ip, 9099);

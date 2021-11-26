@@ -24,26 +24,29 @@ class _SplashScreenState extends State<SplashScreen> {
   void _initialize() async {
     User? user = FirebaseAuth.instance.currentUser;
 
-    if(user == null) {
+    if (user == null) {
       Future.delayed(Duration(seconds: 1)).then(
         (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
       );
       return;
     }
 
-    DocumentSnapshot? userSnap = await Firestore.getUser(user.uid);
-    Map userMap = (userSnap.data() ?? {}) as Map;
-    if (userMap.isEmpty) {
-      Future.delayed(Duration(seconds: 1)).then(
-            (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
-      );
-      return;
+    try {
+      DocumentSnapshot? userSnap = await Firestore.getUser(user.uid);
+      Map userMap = (userSnap.data() ?? {}) as Map;
+      if (userMap.isEmpty) {
+        Future.delayed(Duration(seconds: 1)).then(
+          (val) => Navigator.pushReplacementNamed(context, Routes.LOGIN),
+        );
+        return;
+      } else
+        Njan.initialize(userMap..putIfAbsent("id", () => user.uid));
+    } catch (e) {
+      print('_SplashScreenState._initialize: $e');
     }
-    else
-      Njan.initialize(userMap..putIfAbsent("id", () => user.uid));
 
     Future.delayed(Duration(seconds: 1)).then(
-          (val) => Navigator.pushReplacementNamed(context, Routes.HOME),
+      (val) => Navigator.pushReplacementNamed(context, Routes.HOME),
     );
   }
 
