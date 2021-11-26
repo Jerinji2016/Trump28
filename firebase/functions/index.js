@@ -4,6 +4,7 @@ var admin = require('firebase-admin');
 admin.initializeApp();
 
 //  ___CREATE ROOM
+//  @param type: <int> [4/6] no of players in game
 exports.createRoom = functions.https.onCall(async (data, context) => {
   let maxPlayers = data["type"]
   var uid = context.auth.uid;
@@ -12,7 +13,6 @@ exports.createRoom = functions.https.onCall(async (data, context) => {
   var roomID = userDetails["roomId"];
 
   let date = new Date();
-  console.log(date);
   date.setMinutes(date.getMinutes() + 30);
   console.log(date);
 
@@ -30,6 +30,9 @@ exports.createRoom = functions.https.onCall(async (data, context) => {
 });
 
 //  ___JOIN SEAT
+//  @param seat  : <int> seat number to join
+//  @param roomId: <string> Room ID
+//  @param name  : <string> player name
 exports.joinSeat = functions.https.onCall(async (data, context) => {
   let seat = data["seat"];
   let roomId = data["roomId"];
@@ -62,6 +65,10 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
 });
 
 //  ___SWAP SEAT
+//  @param oldSeat: <int> prevoiusly set seat
+//  @param newSeat: <int> new seat to be changed to
+//  @param roomId : <string> Room ID
+//  @param name   : <string> player name
 exports.swapSeat = functions.https.onCall(async (data, context) => {
   let oldSeat = data["oldSeat"];
   let newSeat = data["newSeat"];
@@ -97,6 +104,8 @@ exports.swapSeat = functions.https.onCall(async (data, context) => {
 });
 
 //  ___LEAVE SEAT
+//  @param seat  : <int> current seat
+//  @param roomId: <string> Room ID
 exports.leaveSeat = functions.https.onCall(async (data, context) => {
   let seat = data["seat"];;
   let roomId = data["roomId"];
