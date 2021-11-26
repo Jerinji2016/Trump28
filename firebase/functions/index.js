@@ -50,10 +50,50 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
   if (players[`${seat}`] != null)
     return { "status": false, "message": "Seat already occupied" };
 
-  players[`${seat}`] = {
-    "name": name,
-    "id": uid,
+  // players[seat] = {
+  //   "name": name,
+  //   "id": uid,
+  //   "ready": false,
+  // };
+
+  //  test code____
+  let testPlayer = {
+    1: {
+      "name": "Jenson",
+      "id": "jhsdvgfvksdvg",
+      "ready": true,
+    },
+    2: {
+      "name": "Raman",
+      "id": "sdjfkbsdljgkhbasd",
+      "ready": true,
+    },
+    3: {
+      "name": "Shafas",
+      "id": "sdhjfkabsdjfhgbas",
+      "ready": true,
+    },
+    4: {
+      "name": "Jerin",
+      "id": "v9HIz2aGEw43sPMtRINo6Hd2XBeL",
+      "ready": false,
+    },
+    5: {
+      "name": "Muscle",
+      "id": "sdfkjvsdgsdfkv",
+      "ready": true,
+    },
+    6: {
+      "name": "Shukkooor",
+      "id": "iylkgjvkucyjsdvf",
+      "ready": true,
+    }
   };
+
+  for (let i = 1; i <= roomDetails["maxPlayers"]; i++)
+    players[i] = testPlayer[i];
+
+  //  test code end___
 
   console.log(players);
 
@@ -62,6 +102,44 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
   });
 
   return { "status": true, "message": "success" };
+});
+
+//  ___PLAYER READY
+//  @param seatNo     : <int> player seat number
+//  @param readyStatus: <boolean> ready -> true, not ready -> false
+//  @param roomId     : <string> Room ID
+exports.playerReady = functions.https.onCall(async (data, context) => {
+  let seatNo = data["seatNo"];
+  let roomId = data["roomId"];
+  let readyStatus = data["readyStatus"];
+
+  console.log(`${roomId} - ${seatNo} - ${readyStatus}`);
+  var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
+  var players = roomDetails["players"];
+  console.log(players);
+
+  players[seatNo]["ready"] = readyStatus;
+
+  var keys = Object.keys(players);
+  var allPlayersReady = true;
+  for (let i = 0; i < keys.length; i++) {
+    if (!players[keys[i]]["ready"]) {
+      allPlayersReady = false;
+      break;
+    }
+  }
+
+  var updateData = {
+    "players": players
+  };
+
+  if(allPlayersReady) 
+    updateData["status"] = 112;
+
+  console.log(updateData);
+  await admin.firestore().doc(`rooms/${roomId}`).update(updateData);
+  
+  return false;
 });
 
 //  ___SWAP SEAT
@@ -109,13 +187,9 @@ exports.swapSeat = functions.https.onCall(async (data, context) => {
 exports.leaveSeat = functions.https.onCall(async (data, context) => {
   let seat = data["seat"];;
   let roomId = data["roomId"];
-  let uid = context.auth.uid;
-
-  console.log(`${uid} - ${seat}`);
-  console.log(typeof (seat));
 
   var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
-  console.log(roomDetails);
+
   var players = roomDetails["players"];
   if (players == null)
     return { "status": false, "message": "No seat found" };

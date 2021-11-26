@@ -8,6 +8,7 @@ class TrumpApi {
   static const JOIN_ROOM = "joinRoom";
   static const JOIN_SEAT = "joinSeat";
   static const SWAP_SEAT = "swapSeat";
+  static const PLAYER_READY = "playerReady";
   static const LEAVE_SEAT = "leaveSeat";
 
   /// Initializes a room and returns its ID
@@ -44,6 +45,17 @@ class TrumpApi {
     });
     print("response: ${response.data}");
     return response.data ?? false;
+  }
+
+  static Future<bool> playerReady(String roomId, int seatNo, bool status) async {
+    print('TrumpApi.playerReady: ');
+    var callable = FirebaseFunctions.instance.httpsCallable(PLAYER_READY);
+    var response = await callable.call({
+      "roomId" : roomId,
+      "seatNo": seatNo,
+      "readyStatus": status,
+    });
+    return response.data as bool;
   }
 
   static Future<Map> leaveSeat(String roomId, seatNo) async {

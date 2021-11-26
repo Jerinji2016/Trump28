@@ -32,6 +32,15 @@ class Game extends ChangeNotifier {
 
   final List<Player> players = [];
 
+  Player? get me {
+    Njan njan = Njan();
+    Player? me;
+    try {
+      me = players.firstWhere((element) => element.id == njan.id);
+    } catch (e) {}
+    return me;
+  }
+
   bool get haveIJoined => mySeat != null;
 
   factory Game.create(Map json) {
@@ -48,9 +57,28 @@ class Game extends ChangeNotifier {
     Game game = new Game(json["roomID"], gameType, gameStage);
     if (json.containsKey("players")) {
       Map playersJson = json["players"];
-      playersJson.keys.forEach((seat) {
-        Map player = playersJson[seat]..update("serverSeat", (value) => int.parse(seat), ifAbsent: () => int.parse(seat));
-        game.players.add(Player.fromJson(player));
+      print(playersJson);
+
+      Njan njan = Njan();
+      int mySeat = int.parse(playersJson.keys.firstWhere(
+        (k) => playersJson[k]["id"] == njan.id,
+        orElse: () => "-1",
+      ));
+      print("mySeat: $mySeat");
+
+      playersJson.keys.forEach((_seat) {
+        int seat = int.parse(_seat);
+        int _seatPosition;
+        if (mySeat > 0) {
+          _seatPosition = seat - mySeat + 1;
+          if (_seatPosition < 1) _seatPosition = 6 + _seatPosition;
+        } else
+          _seatPosition = -1;
+
+        print("server: $seat - client:$_seatPosition");
+        print(playersJson[_seat]);
+        Map player = playersJson[_seat]..update("serverSeat", (value) => seat, ifAbsent: () => seat);
+        game.players.add(Player.fromJson(player, _seatPosition));
       });
     }
     return game;

@@ -8,13 +8,13 @@ class Player {
   final String name;
   final String id;
   final int serverSeatPosition;
-  late final int seatPosition;
+  final int clientSeatPosition;
+  bool isReady;
 
-  Player._(this.id, this.name, this.serverSeatPosition);
+  Player._(this.id, this.name, this.serverSeatPosition, this.isReady, this.clientSeatPosition);
 
-  factory Player.fromJson(Map json) {
-    // int _seatPosition = (json["serverSeat"] + 5 - mySeat) % 6;
-    return Player._(json["id"], json["name"], json["serverSeat"]);
+  factory Player.fromJson(Map json, int clientSeatPosition) {
+    return Player._(json["id"], json["name"], json["serverSeat"], json["ready"], clientSeatPosition);
   }
 
   Map<String, dynamic> get map => {"id": id, "name": name, "serverSeat": serverSeatPosition};
@@ -32,7 +32,10 @@ class Player {
                 padding: EdgeInsets.symmetric(vertical: 3.0),
                 height: 30.0,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white24, width: 2),
+                  border: Border.all(
+                    color: isReady ? Colors.white24 : Colors.red.withOpacity(0.7),
+                    width: isReady ? 2 : 3,
+                  ),
                   color: Colors.grey[800]!.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(30.0),
                 ),

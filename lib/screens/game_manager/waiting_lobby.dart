@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trump28/providers/game.dart';
@@ -17,6 +16,7 @@ class WaitingLobby extends StatefulWidget {
 
 class _WaitingLobbyState extends State<WaitingLobby> {
   late Game game;
+
   @override
   Widget build(BuildContext context) {
     print('_WaitingLobbyState.build: ');
@@ -115,25 +115,34 @@ class _WaitingLobbyState extends State<WaitingLobby> {
                 ),
               ),
               SizedBox(height: 15.0),
-              Material(
-                color: Colors.orange[700],
-                borderRadius: BorderRadius.circular(10.0),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(10.0),
-                  onTap: _onStartTapped,
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      "START",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+              AnimatedSize(
+                curve: Curves.fastLinearToSlowEaseIn,
+                duration: Duration(milliseconds: 200),
+                child: (game.haveIJoined)
+                    ? Material(
+                        color: Colors.orange[700],
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(10.0),
+                          onTap: _onReadyTapped,
+                          child: Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              "READY",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 0,
+                        width: 0,
                       ),
-                    ),
-                  ),
-                ),
-              ),
+              )
             ],
           ),
         ),
@@ -149,9 +158,12 @@ class _WaitingLobbyState extends State<WaitingLobby> {
       Navigator.pop(context);
   }
 
-  void _onStartTapped() async {
-    await FirebaseFirestore.instance.collection("rooms").doc(game.roomId).update({
-      "status": 112
-    });
+  void _onReadyTapped() async {
+    var response = await TrumpApi.playerReady(
+      game.roomId,
+      game.mySeat!,
+      !(game.me?.isReady ?? false),
+    );
+    print(response);
   }
 }

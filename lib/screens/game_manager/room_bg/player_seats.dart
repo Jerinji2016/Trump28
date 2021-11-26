@@ -9,7 +9,9 @@ import 'package:trump28/utils/trump_api.dart';
 import 'package:trump28/widget/toast.dart';
 
 class PlayerSeats extends StatefulWidget {
-  const PlayerSeats({Key? key}) : super(key: key);
+  final bool isServerSeat;
+
+  const PlayerSeats({Key? key, this.isServerSeat = true}) : super(key: key);
 
   @override
   _PlayerSeatsState createState() => _PlayerSeatsState();
@@ -48,7 +50,7 @@ class _PlayerSeatsState extends State<PlayerSeats> {
     return Stack(
       children: _playerSeatMap.keys
           .map(
-            (key) => Seat(_playerSeatMap[key], key),
+            (key) => Seat(_playerSeatMap[key], key, widget.isServerSeat),
           )
           .toList(),
     );
@@ -57,12 +59,13 @@ class _PlayerSeatsState extends State<PlayerSeats> {
 
 class Seat extends StatelessWidget {
   final Player? player;
+  final bool isServerSeat;
   final int defaultSeatNo;
 
-  Seat(this.player, this.defaultSeatNo, {Key? key}) : super(key: key);
+  Seat(this.player, this.defaultSeatNo, this.isServerSeat, {Key? key}) : super(key: key);
 
   Alignment _getPlayerSeatAlignment(Game game) {
-    int seatPosition = player?.serverSeatPosition ?? defaultSeatNo;
+    int seatPosition = (isServerSeat ? player?.serverSeatPosition : player?.clientSeatPosition) ?? defaultSeatNo;
     switch (seatPosition) {
       case Player.two:
         return (game.type == GameType.FourPlayer) ? Alignment.centerLeft : Alignment(-0.85, 0.6);
@@ -100,8 +103,7 @@ class Seat extends StatelessWidget {
 
   Widget _joinSeat(BuildContext context, Game game) => GestureDetector(
         onTap: () async {
-          if (game.stage != GameStage.WaitingLobby)
-            return;
+          if (game.stage != GameStage.WaitingLobby) return;
           Map result = (game.haveIJoined
               ? await TrumpApi.swapSeat(
                   game.roomId,
