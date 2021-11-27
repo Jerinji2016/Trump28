@@ -3,6 +3,10 @@ var admin = require('firebase-admin');
 
 admin.initializeApp();
 
+async function getRoomDetails(roomID) {
+  return await admin.firestore().doc(`rooms/${roomID}`).get().then((snap) => snap.data());
+}
+
 //  ___CREATE ROOM
 //  @param type: <int> [4/6] no of players in game
 exports.createRoom = functions.https.onCall(async (data, context) => {
@@ -26,8 +30,10 @@ exports.createRoom = functions.https.onCall(async (data, context) => {
   await admin.firestore().collection(`rooms/${roomID}/chat`).get().then(snap => {
     snap.forEach(doc => {
       doc.ref.delete();
-    })
+    });
+    console.log("chat cleared...");
   });
+
   await admin.firestore().doc(`rooms/${roomID}`).set(roomData);
   roomID.id = roomID;
   console.log("room created successfully");
@@ -47,7 +53,7 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
   console.log(`${uid} - ${name} - ${seat}`);
   console.log(typeof (seat));
 
-  var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
+  var roomDetails = await getRoomDetails(roomId);
   console.log(roomDetails);
   var players = roomDetails["players"];
   if (players == null)
@@ -70,7 +76,7 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
     },
     4: {
       "name": "Jerin",
-      "id": "v9HIz2aGEw43sPMtRINo6Hd2XBeL",
+      "id": "imaKln6siYnS3YUDkWHnwLAKbtIE",
       "ready": false,
     },
     3: {
@@ -118,7 +124,7 @@ exports.playerReady = functions.https.onCall(async (data, context) => {
   let roomId = data["roomId"];
   let readyStatus = data["readyStatus"];
 
-  var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
+  var roomDetails = await getRoomDetails(roomId);
   var players = roomDetails["players"];
 
   players[seatNo]["ready"] = readyStatus;
@@ -169,7 +175,7 @@ exports.swapSeat = functions.https.onCall(async (data, context) => {
   console.log(`${uid} - ${name} - ${oldSeat} - ${newSeat}`);
   console.log(typeof (seat));
 
-  var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
+  var roomDetails = await getRoomDetails(roomId);
   console.log(roomDetails);
   var players = roomDetails["players"];
   if (players == null)
@@ -200,7 +206,7 @@ exports.leaveSeat = functions.https.onCall(async (data, context) => {
   let seat = data["seat"];;
   let roomId = data["roomId"];
 
-  var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
+  var roomDetails = await getRoomDetails(roomId);
 
   var players = roomDetails["players"];
   if (players == null)
@@ -213,4 +219,39 @@ exports.leaveSeat = functions.https.onCall(async (data, context) => {
   });
 
   return { "status": true, "message": "success" };
+});
+
+//  ___DEAL FIRST ROUND
+//  @param roomId             : <string> Room ID
+//  @param shuffledCardsString: <string> Shuffled cards string joined with '-' seperator
+//  @return [remaining cards]
+exports.dealFirstRound = functions.https.onCall(async (data, context) => {
+  var roomId = data["roomId"];
+  var shuffledCardsString = data["shuffledCardString"];
+  var shuffledCards = shuffledCardsString.split("-");
+
+  const roomDetails = await getRoomDetails(roomId);
+  var players = roomDetails["players"];
+  let cardsPerPlayer = (roomDetails["maxPlayers"] == 4) ? 4 : 3;
+
+  Object.keys(players).forEach(playerSeat => {
+    var player = players[playerSeat];
+    var cards = [];
+
+    for (let i = 0; i < cardsPerPlayer; i++)
+      cards.push(shuffledCards.pop());
+
+    player["cards"] = cards;
+    console.log(player);
+  });
+
+  var gameUpdate = {
+    "players": players,
+    "remainingCards": shuffledCards,
+    "status": 113,
+  };
+
+  console.log(gameUpdate);
+  await admin.firestore().doc(`rooms/${roomId}`).update(gameUpdate);
+  return true;
 });

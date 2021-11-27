@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/providers/game_hand.dart';
 import 'package:trump28/res/font_map/suits_icons.dart' as SuitIcons;
 
 enum CardSuit { Spade, Club, Dice, Heart }
 
 class PlayCard {
+  static final List<String> _cards = const [
+    "SK", "SQ", "SJ", "ST", "S9", "S8", "S7", "SA",
+    "HK", "HQ", "HJ", "HT", "H9", "H8", "H7", "HA",
+    "CK", "CQ", "CJ", "CT", "C9", "C8", "C7", "CA",
+    "DK", "DQ", "DJ", "DT", "D9", "D8", "D7", "DA"
+  ];
+
+  static List<String> get fourPlayerCards => _cards;
+
+  static List<String> get sixPlayerCards => List.from(_cards)..addAll(["S6", "H6", "C6", "D6"]);
+
   final Map<String, CardSuit> _suitsMap = const {
     "S": CardSuit.Spade,
     "H": CardSuit.Heart,
@@ -67,16 +79,14 @@ class PlayCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    gameHand = Provider.of<GameHand>(context, listen: false);
+    gameHand = Provider.of<Game>(context).myHand;
 
     return Positioned(
       left: cardIndex * offset,
       child: GestureDetector(
         onTap: () {
           gameHand.selectedCard = (gameHand.selectedCard == null || gameHand.selectedCard!.id != card.id) ? card : null;
-          print("card tapped:${card.id} - inGameHand: ${gameHand.selectedCard?.id}");
           onCardTapped?.call(card);
-          gameHand.notify();
         },
         child: Transform.translate(
           offset: Offset(0.0, isCardSelected ? -20.0: 0.0),

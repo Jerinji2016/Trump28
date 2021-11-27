@@ -51,7 +51,6 @@ class _GameManagerState extends State<GameManager> {
                   switch (game.stage) {
                     case GameStage.WaitingLobby:
                       return WaitingLobby();
-                    case GameStage.AllPlayersReady:
                     case GameStage.Dealing1:
                     case GameStage.FirstAuction:
                     case GameStage.Dealing2:

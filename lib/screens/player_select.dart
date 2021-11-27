@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trump28/providers/game.dart';
+import 'package:trump28/enums/game_type.dart';
 import 'package:trump28/routes.dart';
 import 'package:trump28/utils/trump_api.dart';
 

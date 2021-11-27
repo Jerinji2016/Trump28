@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:trump28/enums/game_type.dart';
 import 'package:trump28/providers/game.dart';
 import 'package:trump28/modals/njan.dart';
 
@@ -8,8 +9,10 @@ class TrumpApi {
   static const JOIN_ROOM = "joinRoom";
   static const JOIN_SEAT = "joinSeat";
   static const SWAP_SEAT = "swapSeat";
-  static const PLAYER_READY = "playerReady";
   static const LEAVE_SEAT = "leaveSeat";
+
+  static const PLAYER_READY = "playerReady";
+  static const DEAL_FIRST_ROUND = "dealFirstRound";
 
   /// Initializes a room and returns its ID
   static Future<Game> initializeRoom(GameType gameType) async {
@@ -67,5 +70,17 @@ class TrumpApi {
     });
     print("response: ${response.data}");
     return response.data ?? false;
+  }
+
+  /// Send cards shuffled for first dealing and return remaining cards after first dealing
+  static Future<bool> sendShuffledCards(String roomId, String shuffledCardString) async {
+    print('TrumpApi.sendShuffledCards: ');
+    var callable = FirebaseFunctions.instance.httpsCallable(DEAL_FIRST_ROUND);
+    var response = await callable.call({
+      "roomId": roomId,
+      "shuffledCardString": shuffledCardString,
+    });
+    print(response.data);
+    return response.data;
   }
 }

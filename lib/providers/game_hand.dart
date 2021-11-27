@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:trump28/modals/play_card.dart';
 
-class GameHand extends ChangeNotifier {
+class GameHand {
   List<PlayCard> cards = [];
 
   PlayCard? selectedCard;
-
-  void notify() => this.notifyListeners();
 }
