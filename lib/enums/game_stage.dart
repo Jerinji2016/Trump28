@@ -6,19 +6,19 @@ enum GameStage {
   /// [112]: Deal first half of the cards
   Dealing1,
 
-  /// [114]: First auction from minimum (14)
+  /// [113]: First auction from minimum (14)
   FirstAuction,
 
-  /// [115]: Deal rest of the cards
+  /// [114]: Deal rest of the cards
   Dealing2,
 
-  /// [116]: Last auction from minimum (20)
+  /// [115]: Last auction from minimum (20)
   FinalAuction,
 
-  /// [117]: Game started
+  /// [116]: Game started
   InGame,
 
-  /// [118]: Game over, show result
+  /// [117]: Game over, show result
   GameOver,
 
   /// [199]: Somebody f**ked up the game :(
