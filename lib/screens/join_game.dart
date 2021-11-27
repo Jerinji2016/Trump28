@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:trump28/globals.dart';
+import 'package:trump28/modals/njan.dart';
 import 'package:trump28/providers/game.dart';
 import 'package:trump28/res/font_map/suits_icons.dart';
 import 'package:trump28/routes.dart';
@@ -198,10 +199,10 @@ class _JoinGameState extends State<JoinGame> {
   void _joinRoom() async {
     String roomId = _roomIdController.text.trim();
 
-    // if(roomId == Njan().roomID){
-    //   Toast.show(context, "Can't join to that room!", Toast.LENGTH_SHORT);
-    //   return;
-    // }
+    if(roomId == Njan().roomID){
+      Toast.show(context, "Can't join to that room!", Toast.LENGTH_SHORT);
+      return;
+    }
 
     var response = await Firestore.getRoomDetails(roomId);
     if(response == null) {
@@ -214,7 +215,7 @@ class _JoinGameState extends State<JoinGame> {
       return;
     }
 
-    var game = Game.create(response);
+    var game = Game(response);
     Navigator.pushNamed(
       context,
       Routes.GAME_MANAGER,

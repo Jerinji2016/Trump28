@@ -52,7 +52,7 @@ class Firestore {
     await for (final snapshot in snap)
       if (snapshot.data() != null) {
         try {
-          yield Game.parse(snapshot.data() as Map);
+          yield Game(snapshot.data() as Map);
         } catch (e) {
           print(e);
         }

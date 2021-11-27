@@ -19,7 +19,7 @@ class TrumpApi {
       "type": gameType == GameType.FourPlayer ? 4 : 6,
     });
     print(response.data);
-    return Game.create(response.data);
+    return Game(response.data);
   }
 
   static Future<Map> joinSeat(int seatNo, String roomId) async {

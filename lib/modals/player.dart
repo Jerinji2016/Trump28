@@ -5,22 +5,21 @@ class Player {
   static final List<int> fourPlayers = [one, two, three, four];
   static final List<int> sixPlayers = [one, two, three, four, five, six];
 
-  final String name;
-  final String id;
-  final int serverSeatPosition;
+  final Map json;
+
+  String get id => json["id"];
+
+  String get name => json["name"];
+
+  int get serverSeatPosition => json["serverSeat"];
+
   final int clientSeatPosition;
-  bool isReady;
 
-  Player._(this.id, this.name, this.serverSeatPosition, this.isReady, this.clientSeatPosition);
+  bool get isReady => json["ready"];
 
-  factory Player.fromJson(Map json, int clientSeatPosition) {
-    return Player._(json["id"], json["name"], json["serverSeat"], json["ready"], clientSeatPosition);
-  }
+  Player(this.json, this.clientSeatPosition);
 
-  Map<String, dynamic> get map => {"id": id, "name": name, "serverSeat": serverSeatPosition};
-
-  Widget get widget {
-    return Stack(
+  Widget get widget => Stack(
       children: [
         Align(
           alignment: Alignment.center,
@@ -78,5 +77,4 @@ class Player {
         ),
       ],
     );
-  }
 }

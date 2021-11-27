@@ -12,15 +12,21 @@ enum GameType {
 }
 
 class Game extends ChangeNotifier {
-  final String roomId;
-  final GameType type;
-  GameStage stage;
+  final Map json;
 
-  Game(this.roomId, this.type, this.stage);
+  String get roomId => json["roomID"];
+
+  GameType get type => json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
+
+  GameStage get stage => GameStageExtension.fromCode(json["status"]);
+
+  Game(this.json);
 
   int get noOfSeats => type == GameType.FourPlayer ? 4 : 6;
 
   int get noOfPlayers => players.length;
+
+  String? dealerId;
 
   int? get mySeat {
     int myIndex = players.indexWhere((element) => element.id == Njan().id);
@@ -30,7 +36,32 @@ class Game extends ChangeNotifier {
 
   GameHand myHand = GameHand();
 
-  final List<Player> players = [];
+  List<Player> get players {
+    List<Player> _players = [];
+    if (json.containsKey("players")) {
+      Map playersJson = json["players"];
+
+      Njan njan = Njan();
+      int mySeat = int.parse(playersJson.keys.firstWhere(
+            (k) => playersJson[k]["id"] == njan.id,
+        orElse: () => "-1",
+      ));
+
+      playersJson.keys.forEach((_seat) {
+        int seat = int.parse(_seat);
+        int _seatPosition;
+        if (mySeat > 0) {
+          _seatPosition = seat - mySeat + 1;
+          if (_seatPosition < 1) _seatPosition = (type == GameType.SixPlayer ? 6 : 4) + _seatPosition;
+        } else
+          _seatPosition = -1;
+
+        Map player = playersJson[_seat]..update("serverSeat", (value) => seat, ifAbsent: () => seat);
+        _players.add(Player(player, _seatPosition));
+      });
+    }
+    return _players;
+  }
 
   Player? get me {
     Njan njan = Njan();
@@ -42,51 +73,4 @@ class Game extends ChangeNotifier {
   }
 
   bool get haveIJoined => mySeat != null;
-
-  factory Game.create(Map json) {
-    GameType gameType = json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
-    GameStage gameStage = GameStageExtension.fromCode(json["status"]);
-    Game game = Game(json["roomID"], gameType, gameStage);
-    return game;
-  }
-
-  factory Game.parse(Map json) {
-    GameType gameType = json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
-    GameStage gameStage = GameStageExtension.fromCode(json["status"]);
-
-    Game game = new Game(json["roomID"], gameType, gameStage);
-    if (json.containsKey("players")) {
-      Map playersJson = json["players"];
-      print(playersJson);
-
-      Njan njan = Njan();
-      int mySeat = int.parse(playersJson.keys.firstWhere(
-        (k) => playersJson[k]["id"] == njan.id,
-        orElse: () => "-1",
-      ));
-      print("mySeat: $mySeat");
-
-      playersJson.keys.forEach((_seat) {
-        int seat = int.parse(_seat);
-        int _seatPosition;
-        if (mySeat > 0) {
-          _seatPosition = seat - mySeat + 1;
-          if (_seatPosition < 1) _seatPosition = 6 + _seatPosition;
-        } else
-          _seatPosition = -1;
-
-        print("server: $seat - client:$_seatPosition");
-        print(playersJson[_seat]);
-        Map player = playersJson[_seat]..update("serverSeat", (value) => seat, ifAbsent: () => seat);
-        game.players.add(Player.fromJson(player, _seatPosition));
-      });
-    }
-    return game;
-  }
-
-  void addPlayer(Player player) => (players.length < noOfSeats) ? players.add(player) : print("player full");
-
-  void removePlayer(String id) => players.removeWhere((element) => element.id == id);
-
-  void notify() => notifyListeners();
 }

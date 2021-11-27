@@ -128,7 +128,7 @@ class _WaitingLobbyState extends State<WaitingLobby> {
                           child: Container(
                             padding: EdgeInsets.all(10.0),
                             child: Text(
-                              "READY",
+                              (game.me?.isReady ?? false ) ? "CANCEL" : "READY",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.0,

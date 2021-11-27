@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trump28/res/trump28.dart';
+import 'package:trump28/screens/game_manager/game_table/player_hand_manager.dart';
 
 import '../room_bg/player_seats.dart';
 import '../room_bg/room_bg.dart';
 import 'game_chat.dart';
-import 'player_hand.dart';
 
 class GameTable extends StatefulWidget {
   const GameTable({Key? key}) : super(key: key);
@@ -58,8 +58,8 @@ class _GameTableState extends State<GameTable> {
                 child: Stack(
                   children: [
                     RoomTable(),
-                    PlayerSeats(),
-                    PlayerHand(),
+                    PlayerSeats(isServerSeat: false),
+                    PlayerHandManager(),
                   ],
                 ),
               ),

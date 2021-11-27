@@ -23,6 +23,11 @@ exports.createRoom = functions.https.onCall(async (data, context) => {
     roomExpiry: admin.firestore.Timestamp.fromDate(date)
   };
 
+  await admin.firestore().collection(`rooms/${roomID}/chat`).get().then(snap => {
+    snap.forEach(doc => {
+      doc.ref.delete();
+    })
+  });
   await admin.firestore().doc(`rooms/${roomID}`).set(roomData);
   roomID.id = roomID;
   console.log("room created successfully");
@@ -63,20 +68,20 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
       "id": "jhsdvgfvksdvg",
       "ready": true,
     },
-    2: {
-      "name": "Raman",
-      "id": "sdjfkbsdljgkhbasd",
-      "ready": true,
+    4: {
+      "name": "Jerin",
+      "id": "v9HIz2aGEw43sPMtRINo6Hd2XBeL",
+      "ready": false,
     },
     3: {
       "name": "Shafas",
       "id": "sdhjfkabsdjfhgbas",
       "ready": true,
     },
-    4: {
-      "name": "Jerin",
-      "id": "v9HIz2aGEw43sPMtRINo6Hd2XBeL",
-      "ready": false,
+    2: {
+      "name": "Raman",
+      "id": "sdjfkbsdljgkhbasd",
+      "ready": true,
     },
     5: {
       "name": "Muscle",
@@ -113,10 +118,8 @@ exports.playerReady = functions.https.onCall(async (data, context) => {
   let roomId = data["roomId"];
   let readyStatus = data["readyStatus"];
 
-  console.log(`${roomId} - ${seatNo} - ${readyStatus}`);
   var roomDetails = await admin.firestore().doc(`rooms/${roomId}`).get().then((snap) => snap.data());
   var players = roomDetails["players"];
-  console.log(players);
 
   players[seatNo]["ready"] = readyStatus;
 
@@ -133,12 +136,21 @@ exports.playerReady = functions.https.onCall(async (data, context) => {
     "players": players
   };
 
-  if(allPlayersReady) 
+  if (allPlayersReady) {
     updateData["status"] = 112;
 
+    //  initialize game details
+    const maxPlayers = roomDetails["maxPlayers"];
+    let randomPlayer = Math.ceil(Math.random() * maxPlayers);
+    // updateData["dealerId"] = players[randomPlayer]["id"];
+
+    //  ___remove test code
+    updateData["dealerId"] = players[4]["id"];
+  }
+
   console.log(updateData);
+
   await admin.firestore().doc(`rooms/${roomId}`).update(updateData);
-  
   return false;
 });
 

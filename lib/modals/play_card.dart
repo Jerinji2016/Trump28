@@ -12,7 +12,7 @@ class PlayCard {
     "C": CardSuit.Club,
     "D": CardSuit.Dice,
   };
-  final List<String> _values = const ["K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2", "A"];
+  final List<String> _values = const ["K", "Q", "J", "T", "9", "8", "7", "6", "A"];
 
   String get cardValue => (value == "T") ? "10" : value;
 
