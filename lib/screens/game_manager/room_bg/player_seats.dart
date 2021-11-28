@@ -30,12 +30,6 @@ class _PlayerSeatsState extends State<PlayerSeats> {
   }
 
   @override
-  void didUpdateWidget(covariant PlayerSeats oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print('_PlayerSeatsState.didUpdateWidget: ');
-  }
-
-  @override
   Widget build(BuildContext context) {
     game = Provider.of<Game>(context);
 

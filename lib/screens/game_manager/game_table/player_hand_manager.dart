@@ -41,26 +41,21 @@ class DealingCards extends StatelessWidget {
 
   static bool isDealing = false;
 
-  void _dealCards() async {
+  void _shuffleCards() async {
     print('DealingCards._dealCards: ');
 
     isDealing = true;
     List<String> _cards = List.from(type == GameType.FourPlayer ? PlayCard.fourPlayerCards : PlayCard.sixPlayerCards);
     _cards.shuffle();
     String cardsString = _cards.join("-");
-    try {
-      await TrumpApi.sendShuffledCards(roomId, cardsString);
-    } on Exception {
-      print("________________________Exception on sendShuffledCards");
-    } finally {
-      isDealing = false;
-    }
+    await TrumpApi.sendShuffledCards(roomId, cardsString);
+    isDealing = false;
   }
 
   @override
   Widget build(BuildContext context) {
     Njan njan = Njan();
-    if (dealerId == njan.id && !isDealing) _dealCards();
+    if (dealerId == njan.id && !isDealing) _shuffleCards();
 
     return Center(
       child: Text(

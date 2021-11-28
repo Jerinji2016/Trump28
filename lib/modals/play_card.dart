@@ -139,7 +139,6 @@ class PlayCardWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           gameHand.selectedCard.value = (gameHand.selectedCard.value == null || gameHand.selectedCard.value!.id != card.id) ? card : null;
-          print('PlayCardWidget.build: ${gameHand.selectedCard.value?.id}');
           onCardTapped?.call(card);
           game.notify();
         },
