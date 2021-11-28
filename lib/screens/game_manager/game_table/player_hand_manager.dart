@@ -45,7 +45,7 @@ class DealingCards extends StatelessWidget {
     print('DealingCards._dealCards: ');
 
     isDealing = true;
-    List<String> _cards = List.from(type == GameType.FourPlayer ? PlayCard.fourPlayerCards: PlayCard.sixPlayerCards);
+    List<String> _cards = List.from(type == GameType.FourPlayer ? PlayCard.fourPlayerCards : PlayCard.sixPlayerCards);
     _cards.shuffle();
     String cardsString = _cards.join("-");
     try {

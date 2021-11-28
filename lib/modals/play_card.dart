@@ -8,10 +8,38 @@ enum CardSuit { Spade, Club, Dice, Heart }
 
 class PlayCard {
   static final List<String> _cards = const [
-    "SK", "SQ", "SJ", "ST", "S9", "S8", "S7", "SA",
-    "HK", "HQ", "HJ", "HT", "H9", "H8", "H7", "HA",
-    "CK", "CQ", "CJ", "CT", "C9", "C8", "C7", "CA",
-    "DK", "DQ", "DJ", "DT", "D9", "D8", "D7", "DA"
+    "SK",
+    "SQ",
+    "SJ",
+    "ST",
+    "S9",
+    "S8",
+    "S7",
+    "SA",
+    "HK",
+    "HQ",
+    "HJ",
+    "HT",
+    "H9",
+    "H8",
+    "H7",
+    "HA",
+    "CK",
+    "CQ",
+    "CJ",
+    "CT",
+    "C9",
+    "C8",
+    "C7",
+    "CA",
+    "DK",
+    "DQ",
+    "DJ",
+    "DT",
+    "D9",
+    "D8",
+    "D7",
+    "DA"
   ];
 
   static List<String> get fourPlayerCards => _cards;
@@ -41,6 +69,28 @@ class PlayCard {
       default:
         return SuitIcons.Suits.dice;
     }
+  }
+
+  Widget get cardLabel {
+    Color color = cardColor;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          cardIcon,
+          color: color,
+          size: 16,
+        ),
+        SizedBox(width: 2.0),
+        Text(
+          cardValue,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
+        )
+      ],
+    );
   }
 
   final String id;
@@ -75,21 +125,24 @@ class PlayCardWidget extends StatelessWidget {
   final double offset = 35.0;
   late final GameHand gameHand;
 
-  bool get isCardSelected => gameHand.selectedCard?.id == card.id;
+  bool get isCardSelected => gameHand.selectedCard.value?.id == card.id;
 
   @override
   Widget build(BuildContext context) {
-    gameHand = Provider.of<Game>(context).myHand;
+    Game game = Provider.of<Game>(context);
+    gameHand = game.myHand;
 
     return Positioned(
       left: cardIndex * offset,
       child: GestureDetector(
         onTap: () {
-          gameHand.selectedCard = (gameHand.selectedCard == null || gameHand.selectedCard!.id != card.id) ? card : null;
+          gameHand.selectedCard.value = (gameHand.selectedCard.value == null || gameHand.selectedCard.value!.id != card.id) ? card : null;
+          print('PlayCardWidget.build: ${gameHand.selectedCard.value?.id}');
           onCardTapped?.call(card);
+          game.notify();
         },
         child: Transform.translate(
-          offset: Offset(0.0, isCardSelected ? -20.0: 0.0),
+          offset: Offset(0.0, isCardSelected ? -20.0 : 0.0),
           child: Material(
             elevation: 5,
             color: Colors.grey[900],

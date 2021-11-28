@@ -81,4 +81,6 @@ class Game extends ChangeNotifier {
   }
 
   bool get haveIJoined => mySeat != null;
+
+  void notify() => notifyListeners();
 }

@@ -4,16 +4,10 @@ import 'package:trump28/screens/game_manager/game_table/player_hand_manager.dart
 
 import '../room_bg/player_seats.dart';
 import '../room_bg/room_bg.dart';
+import 'bidding_panel.dart';
 import 'game_chat.dart';
 
-class GameTable extends StatefulWidget {
-  const GameTable({Key? key}) : super(key: key);
-
-  @override
-  _GameTableState createState() => _GameTableState();
-}
-
-class _GameTableState extends State<GameTable> {
+class GameTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -71,6 +65,13 @@ class _GameTableState extends State<GameTable> {
           left: 20,
           child: GameChat(),
         ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 150.0,
+          child: BiddingPanel(),
+        )
       ],
     );
   }
