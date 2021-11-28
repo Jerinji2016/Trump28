@@ -109,20 +109,22 @@ class PlayCard {
 
   Widget getWidget(
     BuildContext context,
-    int cardIndex,
+    double cardOffset,
     Function(PlayCard) onCardTapped,
   ) =>
-      PlayCardWidget(cardIndex, this, onCardTapped: onCardTapped);
+      PlayCardWidget(cardOffset, this, onCardTapped: onCardTapped);
 }
 
 class PlayCardWidget extends StatelessWidget {
-  final int cardIndex;
+  static const WIDTH = 70.0;
+  static const HEIGHT = 100.0;
+
+  final double cardOffset;
   final PlayCard card;
   final Function(PlayCard)? onCardTapped;
 
-  PlayCardWidget(this.cardIndex, this.card, {Key? key, this.onCardTapped}) : super(key: key);
+  PlayCardWidget(this.cardOffset, this.card, {Key? key, this.onCardTapped}) : super(key: key);
 
-  final double offset = 35.0;
   late final GameHand gameHand;
 
   bool get isCardSelected => gameHand.selectedCard.value?.id == card.id;
@@ -133,7 +135,7 @@ class PlayCardWidget extends StatelessWidget {
     gameHand = game.myHand;
 
     return Positioned(
-      left: cardIndex * offset,
+      left: cardOffset,
       child: GestureDetector(
         onTap: () {
           gameHand.selectedCard.value = (gameHand.selectedCard.value == null || gameHand.selectedCard.value!.id != card.id) ? card : null;
@@ -148,8 +150,8 @@ class PlayCardWidget extends StatelessWidget {
             color: Colors.grey[900],
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             child: Container(
-              width: 70,
-              height: 100,
+              width: WIDTH,
+              height: HEIGHT,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey[700]!),
                 borderRadius: BorderRadius.circular(8.0),

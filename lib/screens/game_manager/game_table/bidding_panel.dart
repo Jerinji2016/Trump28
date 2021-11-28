@@ -44,6 +44,8 @@ class _BiddingPanelState extends State<BiddingPanel> with TickerProviderStateMix
     await _panelAnimationController.reverse();
   }
 
+  void _skipBid() {}
+
   @override
   Widget build(BuildContext context) {
     game = Provider.of<Game>(context, listen: false);
@@ -71,125 +73,158 @@ class _BiddingPanelState extends State<BiddingPanel> with TickerProviderStateMix
         child: child!,
       ),
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.65),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0),
-            bottomLeft: Radius.circular(10.0),
-          ),
-        ),
         margin: EdgeInsets.only(
           top: MediaQuery.of(context).size.height * 0.2,
           bottom: MediaQuery.of(context).size.height * 0.1,
         ),
-        padding: EdgeInsets.symmetric(vertical: 15.0),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              child: Text(
-                "Selected card: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            SizedBox(height: 5.0),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 5.0),
-              child: ValueListenableBuilder<PlayCard?>(
-                valueListenable: game.myHand.selectedCard,
-                builder: (context, value, _) =>
-                    value?.cardLabel ??
-                    Text(
-                      "--",
-                      style: TextStyle(
-                        color: Colors.white,
+            if (game.canSkipBidding)
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 30.0),
+                child: Material(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.orange[800],
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.orange,
+                    borderRadius: BorderRadius.circular(5.0),
+                    onTap: _skipBid,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      child: Text(
+                        "Skip Bid",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20.0),
-            Expanded(
+            if (game.canSkipBidding) SizedBox(width: 15.0),
+            Container(
+              width: 150,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.65),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 15.0),
               child: Column(
                 children: [
-                  Text(
-                    "Bid",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                  SizedBox(height: 5.0),
-                  ValueListenableBuilder<int>(
-                    valueListenable: _bid,
-                    builder: (context, value, _) => Text(
-                      "$value",
+                  Container(
+                    child: Text(
+                      "Selected card: ",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
+                  SizedBox(height: 5.0),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 5.0),
+                    child: ValueListenableBuilder<PlayCard?>(
+                      valueListenable: game.myHand.selectedCard,
+                      builder: (context, value, _) =>
+                          value?.cardLabel ??
+                          Text(
+                            "--",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                    ),
+                  ),
                   SizedBox(height: 20.0),
                   Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: [
-                        Material(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: InkWell(
-                            onTap: _onCallUp,
-                            borderRadius: BorderRadius.circular(30.0),
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
-                              child: Icon(
-                                Icons.keyboard_arrow_up,
-                                color: Colors.white,
-                              ),
+                        Text(
+                          "Bid",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        SizedBox(height: 5.0),
+                        ValueListenableBuilder<int>(
+                          valueListenable: _bid,
+                          builder: (context, value, _) => Text(
+                            "$value",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        Material(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: InkWell(
-                            onTap: _onCallDown,
-                            borderRadius: BorderRadius.circular(30.0),
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
-                              child: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Colors.white,
+                        SizedBox(height: 20.0),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Material(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(30.0),
+                                child: InkWell(
+                                  onTap: _onCallUp,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_up,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Material(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(30.0),
+                                child: InkWell(
+                                  onTap: _onCallDown,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Material(
+                              color: accent,
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: InkWell(
+                                onTap: _callBid,
+                                borderRadius: BorderRadius.circular(5.0),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                                  child: Text(
+                                    "Call",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Material(
-                        color: accent,
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: InkWell(
-                          onTap: _callBid,
-                          borderRadius: BorderRadius.circular(5.0),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
-                            child: Text(
-                              "Call",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],

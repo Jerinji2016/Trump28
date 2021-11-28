@@ -15,6 +15,8 @@ class Game extends ChangeNotifier {
 
   GameType get type => json["maxPlayers"] == 4 ? GameType.FourPlayer : GameType.SixPlayer;
 
+  int get maxPlayer => json["maxPlayers"];
+
   late GameStage stage;
 
   Game(this.json) {
@@ -81,6 +83,16 @@ class Game extends ChangeNotifier {
   }
 
   bool get haveIJoined => mySeat != null;
+
+  String? get nextBidderId => json["nextBidderId"];
+
+  bool get canSkipBidding {
+    Player dealer = players.firstWhere((player) => player.isDealer);
+    int mustBidPlayerSeat = dealer.serverSeatPosition + 1;
+    if (mustBidPlayerSeat > maxPlayer) mustBidPlayerSeat = 1;
+    assert(me != null);
+    return me!.serverSeatPosition != mustBidPlayerSeat;
+  }
 
   void notify() => notifyListeners();
 }

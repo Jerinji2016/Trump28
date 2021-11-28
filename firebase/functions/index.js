@@ -232,7 +232,10 @@ exports.dealFirstRound = functions.https.onCall(async (data, context) => {
 
   const roomDetails = await getRoomDetails(roomId);
   var players = roomDetails["players"];
+  var dealerId = roomDetails["dealerId"];
   let cardsPerPlayer = (roomDetails["maxPlayers"] == 4) ? 4 : 3;
+
+  var nextBidderSeat;
 
   Object.keys(players).forEach(playerSeat => {
     var player = players[playerSeat];
@@ -241,14 +244,23 @@ exports.dealFirstRound = functions.https.onCall(async (data, context) => {
     for (let i = 0; i < cardsPerPlayer; i++)
       cards.push(shuffledCards.pop());
 
+    if(player["id"] == dealerId)
+      nextBidderSeat = parseInt(playerSeat) + 1;    
+
     player["cards"] = cards;
     console.log(player);
   });
+
+  console.log(nextBidderSeat);
+
+  if(nextBidderSeat > roomDetails["maxPlayers"])
+    nextBidderSeat = 1;
 
   var gameUpdate = {
     "players": players,
     "remainingCards": shuffledCards,
     "status": 113,
+    "nextBidderId": players[nextBidderSeat]["id"]
   };
 
   console.log(gameUpdate);

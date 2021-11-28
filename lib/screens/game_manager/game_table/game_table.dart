@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trump28/modals/njan.dart';
+import 'package:trump28/providers/game.dart';
 import 'package:trump28/res/trump28.dart';
 import 'package:trump28/screens/game_manager/game_table/player_hand_manager.dart';
 
@@ -10,6 +13,8 @@ import 'game_chat.dart';
 class GameTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Game game = Provider.of<Game>(context);
+
     return Stack(
       children: [
         Positioned(
@@ -65,13 +70,13 @@ class GameTable extends StatelessWidget {
           left: 20,
           child: GameChat(),
         ),
-        Positioned(
-          right: 0,
-          top: 0,
-          bottom: 0,
-          width: 150.0,
-          child: BiddingPanel(),
-        )
+        if (game.nextBidderId == Njan().id)
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: BiddingPanel(),
+          )
       ],
     );
   }
