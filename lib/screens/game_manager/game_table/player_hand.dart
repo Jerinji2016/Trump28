@@ -13,10 +13,11 @@ class PlayerHand extends StatefulWidget {
 
 class _PlayerHandState extends State<PlayerHand> {
   late Game game;
-
   late List<PlayCard> cards;
 
   int get noOfCards => cards.length;
+  final double offset = 35.0;
+  final double playerHandCenter = 325.0;
 
   @override
   void initState() {
@@ -32,9 +33,12 @@ class _PlayerHandState extends State<PlayerHand> {
 
   @override
   Widget build(BuildContext context) {
-    double sidePadding = MediaQuery.of(context).size.width * 0.2;
+    Size size = MediaQuery.of(context).size;
+    double sidePadding = size.width * 0.16;
+    double totalCardsWidth = (noOfCards - 1) * offset + PlayCardWidget.WIDTH;
+    double startingOffset = playerHandCenter - sidePadding - (totalCardsWidth / 2);
 
-    int i = 1;
+    int i = 0;
     return Positioned(
       bottom: 50.0,
       left: sidePadding,
@@ -44,7 +48,9 @@ class _PlayerHandState extends State<PlayerHand> {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: cards.map((e) {
-            return e.getWidget(context, i++, _onCardSelected);
+            double cardOffset = startingOffset + (i * offset);
+            i++;
+            return e.getWidget(context, cardOffset, _onCardSelected);
           }).toList(),
         ),
       ),
