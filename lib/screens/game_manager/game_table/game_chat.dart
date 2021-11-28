@@ -62,22 +62,26 @@ class _GameChatState extends State<GameChat> with TickerProviderStateMixin {
                 height: Tween<double>(
                   begin: 0,
                   end: maxHeight,
-                ).animate(
-                  CurvedAnimation(
-                    parent: _chatAnimationController,
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                ).value,
+                )
+                    .animate(
+                      CurvedAnimation(
+                        parent: _chatAnimationController,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                    )
+                    .value,
                 width: Tween<double>(
                   begin: 0,
                   end: maxWidth,
-                ).animate(
-                  CurvedAnimation(
-                    parent: _chatAnimationController,
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                ).value,
-                child: child!,
+                )
+                    .animate(
+                      CurvedAnimation(
+                        parent: _chatAnimationController,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                    )
+                    .value,
+                child: _chatAnimationController.value > 0.4 ? child! : SizedBox(height: 0, width: 0),
               );
             },
             child: Stack(
