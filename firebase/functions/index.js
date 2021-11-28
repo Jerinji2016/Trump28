@@ -50,11 +50,7 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
   let name = data["name"];
   let uid = context.auth.uid;
 
-  console.log(`${uid} - ${name} - ${seat}`);
-  console.log(typeof (seat));
-
   var roomDetails = await getRoomDetails(roomId);
-  console.log(roomDetails);
   var players = roomDetails["players"];
   if (players == null)
     players = {};
@@ -106,11 +102,10 @@ exports.joinSeat = functions.https.onCall(async (data, context) => {
 
   //  test code end___
 
-  console.log(players);
-
   await admin.firestore().doc(`rooms/${roomId}`).update({
     "players": players,
   });
+  console.log("seat joined: " + name)
 
   return { "status": true, "message": "success" };
 });
@@ -151,12 +146,11 @@ exports.playerReady = functions.https.onCall(async (data, context) => {
     // updateData["dealerId"] = players[randomPlayer]["id"];
 
     //  ___remove test code
-    updateData["dealerId"] = players[4]["id"];
+    updateData["dealerId"] = players[3]["id"];
   }
 
-  console.log(updateData);
-
   await admin.firestore().doc(`rooms/${roomId}`).update(updateData);
+  console.log(`player ${seatNo} ready...`);
   return false;
 });
 
@@ -172,11 +166,7 @@ exports.swapSeat = functions.https.onCall(async (data, context) => {
   let name = data["name"];
   let uid = context.auth.uid;
 
-  console.log(`${uid} - ${name} - ${oldSeat} - ${newSeat}`);
-  console.log(typeof (seat));
-
   var roomDetails = await getRoomDetails(roomId);
-  console.log(roomDetails);
   var players = roomDetails["players"];
   if (players == null)
     players = {};
@@ -190,11 +180,10 @@ exports.swapSeat = functions.https.onCall(async (data, context) => {
     "id": uid,
   };
 
-  console.log(players);
-
   await admin.firestore().doc(`rooms/${roomId}`).update({
     "players": players,
   });
+  console.log(`swapped seat... ${oldSeat} -> ${newSeat}`);
 
   return { "status": true, "message": "success" };
 });
@@ -218,6 +207,7 @@ exports.leaveSeat = functions.https.onCall(async (data, context) => {
     "players": players,
   });
 
+  console.log("seat left");
   return { "status": true, "message": "success" };
 });
 
@@ -248,10 +238,7 @@ exports.dealFirstRound = functions.https.onCall(async (data, context) => {
       nextBidderSeat = parseInt(playerSeat) + 1;    
 
     player["cards"] = cards;
-    console.log(player);
   });
-
-  console.log(nextBidderSeat);
 
   if(nextBidderSeat > roomDetails["maxPlayers"])
     nextBidderSeat = 1;
@@ -263,7 +250,7 @@ exports.dealFirstRound = functions.https.onCall(async (data, context) => {
     "nextBidderId": players[nextBidderSeat]["id"]
   };
 
-  console.log(gameUpdate);
   await admin.firestore().doc(`rooms/${roomId}`).update(gameUpdate);
+  console.log("first set cards dealt..\nstarting bidding...");
   return true;
 });

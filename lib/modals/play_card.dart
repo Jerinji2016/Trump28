@@ -138,9 +138,10 @@ class PlayCardWidget extends StatelessWidget {
       left: cardOffset,
       child: GestureDetector(
         onTap: () {
+          if(!game.amIBidding)
+            return;
           gameHand.selectedCard.value = (gameHand.selectedCard.value == null || gameHand.selectedCard.value!.id != card.id) ? card : null;
           onCardTapped?.call(card);
-          game.notify();
         },
         child: Transform.translate(
           offset: Offset(0.0, isCardSelected ? -20.0 : 0.0),

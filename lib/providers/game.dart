@@ -86,6 +86,8 @@ class Game extends ChangeNotifier {
 
   String? get nextBidderId => json["nextBidderId"];
 
+  bool get amIBidding => nextBidderId == Njan().id;
+
   bool get canSkipBidding {
     Player dealer = players.firstWhere((player) => player.isDealer);
     int mustBidPlayerSeat = dealer.serverSeatPosition + 1;
